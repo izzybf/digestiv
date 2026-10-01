@@ -190,6 +190,12 @@ nav.tabs {
           <div class="bristol seg" data-field="bristol" role="group" aria-label="Bristol type"></div>
           <div class="bristol-desc" id="bristol-desc">1 is hard lumps, 4 is smooth and soft, 7 is watery.</div>
         </div>
+        <div class="q" id="emptied-q">
+          <div class="label">Felt fully emptied afterwards?</div>
+          <div class="seg" data-field="emptied" role="group" aria-label="Felt fully emptied">
+            <button type="button" data-v="3">Yes</button><button type="button" data-v="2">Partly</button><button type="button" data-v="1">No</button>
+          </div>
+        </div>
       </section>
 
       <section class="block">
@@ -335,6 +341,7 @@ nav.tabs {
     helpers: ["Kiwi", "Prunes", "Sunflower seeds", "Psyllium husk"],
     other: ["On my period", "Feeling unwell", "Travelling", "Antibiotics"]
   };
+  const EMPTIED = ["", "No", "Partly", "Yes"];
   const SCORE_WORD = ["", "Rough", "Off", "Okay", "Good", "Great"];
 
   // ---------- storage ----------
@@ -367,7 +374,7 @@ nav.tabs {
   let state = blank();
   function blank() {
     const prevSleep = Object.values(entries).sort((a, b) => b.date.localeCompare(a.date))[0];
-    return { overall: null, bloating: 0, pain: 0, gas: 0, reflux: 0, nausea: 0, bm: 1, bristol: null, urgency: false,
+    return { overall: null, bloating: 0, pain: 0, gas: 0, reflux: 0, nausea: 0, bm: 1, bristol: null, emptied: null, urgency: false,
       food: "", tags: { food: [], helpers: [], morning: [], other: [] }, water: 6, stressY: null, sleepH: prevSleep ? prevSleep.sleepH : 7, sleepQ: null, stressM: null, notes: "" };
   }
   function render() {
@@ -380,7 +387,7 @@ nav.tabs {
     $('[data-toggle="urgency"]').setAttribute("aria-pressed", String(!!state.urgency));
     $("#f-food").value = state.food || "";
     $("#f-notes").value = state.notes || "";
-    $("#bristol-q").hidden = state.bm === 0;
+    $("#bristol-q").hidden = $("#emptied-q").hidden = state.bm === 0;
     $("#bristol-desc").textContent = state.bristol ? `Type ${state.bristol}: ${BRISTOL[state.bristol - 1]}` : "1 is hard lumps, 4 is smooth and soft, 7 is watery.";
   }
   function openDay(d) {
@@ -431,7 +438,7 @@ nav.tabs {
     e.preventDefault();
     const d = $("#f-date").value || today();
     if (state.overall === null) { $("#toast").textContent = "Pick an overall score (1 to 5) first."; $('[data-field="overall"] button').focus(); return; }
-    if (state.bm === 0) state.bristol = null;
+    if (state.bm === 0) state.bristol = state.emptied = null;
     entries[d] = Object.assign({}, state, { date: d, savedAt: new Date().toISOString() });
     $("#toast").textContent = persist() ? (d === today() ? "Saved. See you tomorrow." : `Saved ${fmtDay(d)}.`) : "Couldn't save: this browser is blocking storage.";
     $("#save-btn").textContent = "Update check-in";
@@ -465,7 +472,7 @@ nav.tabs {
       return `<button class="day" type="button" data-open="${e.date}">
         <span class="pill" data-v="${e.overall}" style="background:var(--s${e.overall})">${e.overall}</span>
         <span class="meta"><b>${fmtDay(e.date)} · ${SCORE_WORD[e.overall]}</b>
-        <span class="tags">${syms.length ? syms.join(", ") : "No symptoms"}${e.bristol ? ` · Bristol ${e.bristol}` : ""}${e.stressY ? ` · stress ${e.stressY}/5` : ""}</span>
+        <span class="tags">${syms.length ? syms.join(", ") : "No symptoms"}${e.bristol ? ` · Bristol ${e.bristol}` : ""}${e.emptied ? ` · emptied: ${EMPTIED[e.emptied].toLowerCase()}` : ""}${e.stressY ? ` · stress ${e.stressY}/5` : ""}</span>
         ${tags.length ? `<span class="tags">${tags.join(" · ")}</span>` : ""}</span></button>`;
     }).join("");
   }
@@ -568,9 +575,9 @@ nav.tabs {
   const msg = t => $("#data-msg").textContent = t;
   $("#export-json").addEventListener("click", () => download(`digestiv-backup-${today()}.json`, "application/json", JSON.stringify({ app: "digestiv", version: 1, entries }, null, 2)));
   $("#export-csv").addEventListener("click", () => {
-    const cols = ["date", "overall", ...SYMPTOMS.map(s => s[0]), "bm", "bristol", "urgency", "water", "stressY", "sleepH", "sleepQ", "stressM", "food_tags", "helpers_tags", "morning_tags", "other_tags", "food", "notes"];
+    const cols = ["date", "overall", ...SYMPTOMS.map(s => s[0]), "bm", "bristol", "emptied", "urgency", "water", "stressY", "sleepH", "sleepQ", "stressM", "food_tags", "helpers_tags", "morning_tags", "other_tags", "food", "notes"];
     const q = v => { v = v === null || v === undefined ? "" : String(v); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
-    const rows = list().reverse().map(e => cols.map(c => q(c.endsWith("_tags") ? (e.tags[c.split("_")[0]] || []).join("; ") : e[c])).join(","));
+    const rows = list().reverse().map(e => cols.map(c => q(c.endsWith("_tags") ? (e.tags[c.split("_")[0]] || []).join("; ") : c === "emptied" ? (EMPTIED[e.emptied] || "") : e[c])).join(","));
     download(`digestiv-${today()}.csv`, "text/csv", [cols.join(","), ...rows].join("\n"));
   });
   $("#import-file").addEventListener("change", async e => {

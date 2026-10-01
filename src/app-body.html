@@ -1,0 +1,606 @@
+<title>Digestiv</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: one phone-width column; sticky tab bar at the bottom; check-in is a stack of quiet sections */
+:root {
+  --bg: #f1f4ee;
+  --surface: #ffffff;
+  --ink: #1d2a23;
+  --muted: #5d6c64;
+  --line: #d7dfd5;
+  --accent: #2c6a55;
+  --accent-ink: #ffffff;
+  --accent-soft: #dbeae2;
+  --s1: #c2553a; --s2: #d68a3c; --s3: #c3a63a; --s4: #74a257; --s5: #36845e;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "Figtree", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111814; --surface: #19221d; --ink: #e3ebe5; --muted: #98a99f; --line: #2a362f;
+    --accent: #7cc4a4; --accent-ink: #0f1a14; --accent-soft: #1e382c;
+    --s1: #e0775c; --s2: #e4a35a; --s3: #d8c25a; --s4: #92c174; --s5: #5cb486;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111814; --surface: #19221d; --ink: #e3ebe5; --muted: #98a99f; --line: #2a362f;
+  --accent: #7cc4a4; --accent-ink: #0f1a14; --accent-soft: #1e382c;
+  --s1: #e0775c; --s2: #e4a35a; --s3: #d8c25a; --s4: #92c174; --s5: #5cb486;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { background: var(--bg); color: var(--ink); }
+body { margin: 0; font: 15px/1.5 var(--body); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 34rem; margin: 0 auto; padding-inline: 16px; padding-block: 20px 110px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.15rem; font-weight: 700; }
+h3 { font-size: 0.95rem; font-weight: 500; }
+.eyebrow { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+header.top { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.datebox { display: flex; align-items: center; gap: 8px; }
+input[type="date"], input[type="time"], input[type="number"], textarea {
+  font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line);
+  border-radius: 10px; padding: 8px 10px;
+}
+textarea { width: 100%; min-height: 84px; resize: vertical; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.banner { background: var(--accent-soft); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; display: flex; gap: 10px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.banner p { margin: 0; }
+
+section.block { padding-block: 18px; border-top: 1px solid var(--line); display: grid; gap: 14px; }
+section.block:first-of-type { border-top: 0; padding-top: 4px; }
+.q { display: grid; gap: 8px; }
+.q > label, .q > .label { font-weight: 600; }
+.hint { font-size: 0.82rem; color: var(--muted); font-weight: 400; }
+
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; }
+.seg button, .chip, .btn, .tab {
+  font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.seg button { padding: 9px 4px; border-radius: 9px; font-size: 0.85rem; min-width: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+.seg.score button[aria-pressed="true"][data-v="1"] { background: var(--s1); border-color: var(--s1); color: #fff; }
+.seg.score button[aria-pressed="true"][data-v="2"] { background: var(--s2); border-color: var(--s2); color: #fff; }
+.seg.score button[aria-pressed="true"][data-v="3"] { background: var(--s3); border-color: var(--s3); color: #1d2a23; }
+.seg.score button[aria-pressed="true"][data-v="4"] { background: var(--s4); border-color: var(--s4); color: #fff; }
+.seg.score button[aria-pressed="true"][data-v="5"] { background: var(--s5); border-color: var(--s5); color: #fff; }
+.seg.score button span { display: block; font-size: 0.7rem; opacity: 0.85; }
+
+.sym { display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr); gap: 8px 10px; align-items: center; }
+.sym .name { font-size: 0.92rem; }
+.sym .seg button { padding: 7px 2px; font-size: 0.78rem; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border-radius: 999px; padding: 6px 12px; font-size: 0.86rem; }
+.chip .box { display: none; }
+.checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.checks .chip { border-radius: 10px; padding: 9px 12px; display: flex; align-items: center; gap: 10px; text-align: left; }
+.checks .chip .box { display: inline-grid; place-items: center; flex: none; width: 20px; height: 20px; border: 2px solid var(--muted); border-radius: 5px; }
+.checks .chip[aria-pressed="true"] .box { background: var(--accent); border-color: var(--accent); }
+.checks .chip[aria-pressed="true"] .box::after { content: ""; width: 5px; height: 10px; border: solid var(--accent-ink); border-width: 0 2px 2px 0; transform: translate(0, -1px) rotate(45deg); }
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); font-weight: 600; }
+
+.bristol { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.bristol button { padding: 8px 2px; border-radius: 9px; font-weight: 600; }
+.bristol-desc { font-size: 0.82rem; color: var(--muted); min-height: 1.3em; }
+
+.stepper { display: inline-flex; align-items: center; gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface); }
+.stepper button { font: inherit; border: 0; background: transparent; color: var(--ink); width: 40px; height: 38px; cursor: pointer; font-size: 1.1rem; }
+.stepper output { min-width: 3.2rem; text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; }
+.row { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+.row .q { flex: 1 1 9rem; }
+
+.btn { border-radius: 11px; padding: 10px 16px; font-weight: 600; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.quiet { background: transparent; }
+.btn.danger { color: var(--s1); border-color: var(--s1); background: transparent; }
+.savebar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding-top: 18px; border-top: 1px solid var(--line); }
+.toast { color: var(--accent); font-weight: 600; }
+
+nav.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  background: var(--surface); border-top: 1px solid var(--line);
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+}
+.tab { border: 0; background: transparent; padding: 8px 4px; border-radius: 10px; font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+.tab[aria-selected="true"] { color: var(--accent); background: var(--accent-soft); }
+
+.day { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 12px; padding-block: 12px; border-top: 1px solid var(--line); cursor: pointer; background: none; border-left: 0; border-right: 0; border-bottom: 0; text-align: left; font: inherit; color: inherit; width: 100%; }
+.day:first-child { border-top: 0; }
+.pill { width: 3rem; height: 3rem; border-radius: 12px; display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 1.3rem; color: #fff; }
+.pill[data-v="3"] { color: #1d2a23; }
+.pill[data-v="0"] { background: var(--line); color: var(--muted); }
+.day .meta { min-width: 0; display: grid; gap: 3px; }
+.day .tags { font-size: 0.82rem; color: var(--muted); overflow-wrap: anywhere; }
+
+.chart { width: 100%; height: auto; display: block; }
+.factor { display: grid; grid-template-columns: minmax(0, 1fr) 7rem 3.2rem; gap: 10px; align-items: center; padding-block: 7px; border-top: 1px solid var(--line); font-size: 0.9rem; }
+.factor:first-child { border-top: 0; }
+.factor .n { font-size: 0.75rem; color: var(--muted); }
+.bar { position: relative; height: 10px; background: var(--line); border-radius: 5px; }
+.bar i { position: absolute; top: 0; bottom: 0; border-radius: 5px; }
+.bar::after { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--muted); }
+.delta { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; }
+.stack { display: grid; gap: 16px; }
+.example-tag { display: inline-block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; background: var(--s3); color: #1d2a23; border-radius: 6px; padding: 2px 7px; }
+.confirm { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+@media (prefers-reduced-motion: no-preference) { .btn, .chip, .seg button, .tab { transition: background-color .15s, border-color .15s; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow" id="hdr-eyebrow">Daily check-in</div>
+      <h1 id="hdr-title">How's your gut?</h1>
+    </div>
+    <div class="datebox" id="datebox">
+      <label for="f-date" class="small muted">Day</label>
+      <input type="date" id="f-date">
+    </div>
+  </header>
+
+  <!-- CHECK-IN -->
+  <main id="view-checkin">
+    <div class="banner" id="reminder-banner" hidden>
+      <p>Get a daily nudge: add a repeating reminder to your calendar.</p>
+      <button class="btn quiet" type="button" data-goto="settings">Set reminder</button>
+    </div>
+
+    <form id="form" autocomplete="off">
+      <section class="block">
+        <h2>Gut today</h2>
+        <div class="q">
+          <div class="label">Overall, how does your digestion feel?</div>
+          <div class="seg score" data-field="overall" role="group" aria-label="Overall">
+            <button type="button" data-v="1">1<span>Rough</span></button>
+            <button type="button" data-v="2">2<span>Off</span></button>
+            <button type="button" data-v="3">3<span>Okay</span></button>
+            <button type="button" data-v="4">4<span>Good</span></button>
+            <button type="button" data-v="5">5<span>Great</span></button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="label">Symptoms</div>
+          <div class="sym" id="symptoms"></div>
+        </div>
+        <div class="row">
+          <div class="q">
+            <div class="label">Bowel movements</div>
+            <div class="stepper" data-field="bm" data-step="1" data-min="0" data-max="12">
+              <button type="button" data-d="-1" aria-label="Fewer">−</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button>
+            </div>
+          </div>
+          <div class="q">
+            <div class="label">Urgency</div>
+            <div class="chips"><button type="button" class="chip" data-toggle="urgency">Had to rush</button></div>
+          </div>
+        </div>
+        <div class="q" id="bristol-q">
+          <div class="label">Bristol stool type <span class="hint">(most typical today)</span></div>
+          <div class="bristol seg" data-field="bristol" role="group" aria-label="Bristol type"></div>
+          <div class="bristol-desc" id="bristol-desc">1 is hard lumps, 4 is smooth and soft, 7 is watery.</div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Yesterday</h2>
+        <div class="q">
+          <label for="f-food">What did you eat and drink?</label>
+          <textarea id="f-food" placeholder="Breakfast: oats with banana. Lunch: chicken wrap. Dinner: pasta with garlic, 2 glasses of wine…"></textarea>
+        </div>
+        <div class="q">
+          <div class="label">Anything in here? <span class="hint">Tap all that apply</span></div>
+          <div class="chips" data-tags="food"></div>
+        </div>
+        <div class="q">
+          <div class="label">Gut helpers <span class="hint">Had any yesterday?</span></div>
+          <div class="checks" data-tags="helpers"></div>
+        </div>
+        <div class="row">
+          <div class="q">
+            <div class="label">Glasses of water</div>
+            <div class="stepper" data-field="water" data-step="1" data-min="0" data-max="20">
+              <button type="button" data-d="-1" aria-label="Fewer">−</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="q">
+          <div class="label">Stress level yesterday</div>
+          <div class="seg" data-field="stressY" role="group" aria-label="Stress yesterday">
+            <button type="button" data-v="1">Calm</button><button type="button" data-v="2">Low</button><button type="button" data-v="3">Some</button><button type="button" data-v="4">High</button><button type="button" data-v="5">Very high</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Last night and this morning</h2>
+        <div class="row">
+          <div class="q">
+            <div class="label">Hours of sleep</div>
+            <div class="stepper" data-field="sleepH" data-step="0.5" data-min="0" data-max="14">
+              <button type="button" data-d="-1" aria-label="Less">−</button><output>7</output><button type="button" data-d="1" aria-label="More">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="q">
+          <div class="label">Sleep quality</div>
+          <div class="seg" data-field="sleepQ" role="group" aria-label="Sleep quality">
+            <button type="button" data-v="1">Awful</button><button type="button" data-v="2">Poor</button><button type="button" data-v="3">Okay</button><button type="button" data-v="4">Good</button><button type="button" data-v="5">Great</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="label">This morning I…</div>
+          <div class="chips" data-tags="morning"></div>
+        </div>
+        <div class="q">
+          <div class="label">Stress this morning</div>
+          <div class="seg" data-field="stressM" role="group" aria-label="Stress this morning">
+            <button type="button" data-v="1">Calm</button><button type="button" data-v="2">Low</button><button type="button" data-v="3">Some</button><button type="button" data-v="4">High</button><button type="button" data-v="5">Very high</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2>Anything else</h2>
+        <div class="chips" data-tags="other"></div>
+        <div class="q">
+          <label for="f-notes">Notes</label>
+          <textarea id="f-notes" placeholder="Felt bloated after lunch, better after a walk…"></textarea>
+        </div>
+      </section>
+
+      <div class="savebar">
+        <button class="btn primary" type="submit" id="save-btn">Save check-in</button>
+        <span class="toast" id="toast" role="status"></span>
+      </div>
+    </form>
+  </main>
+
+  <!-- HISTORY -->
+  <main id="view-history" hidden>
+    <div id="history-list"></div>
+  </main>
+
+  <!-- PATTERNS -->
+  <main id="view-patterns" hidden>
+    <div class="stack" id="patterns"></div>
+  </main>
+
+  <!-- SETTINGS -->
+  <main id="view-settings" hidden>
+    <div class="stack">
+      <div class="card">
+        <h2>Daily reminder</h2>
+        <p class="muted small" style="margin:0">Adds a repeating event with an alert to your phone's calendar, so you get a nudge every day even when the app is closed.</p>
+        <div class="row">
+          <label for="f-remind" class="small">Remind me at</label>
+          <input type="time" id="f-remind" value="08:30">
+        </div>
+        <div class="row">
+          <button class="btn primary" type="button" id="ics-btn">Add to calendar</button>
+        </div>
+        <p class="muted small" id="frame-note" hidden style="margin:0">Downloads are blocked in this preview. Use the installed app to add the reminder.</p>
+        <p class="muted small" style="margin:0">If you've installed Digestiv to your home screen, its icon also shows a badge until you've checked in for the day.</p>
+      </div>
+      <div class="card">
+        <h2>Your data</h2>
+        <p class="muted small" style="margin:0">Everything stays on this device. Export a backup now and then, or to share with a doctor.</p>
+        <div class="row" style="gap:8px">
+          <button class="btn" type="button" id="export-json">Export backup (JSON)</button>
+          <button class="btn" type="button" id="export-csv">Export spreadsheet (CSV)</button>
+          <label class="btn" for="import-file">Import backup</label>
+          <input type="file" id="import-file" accept="application/json,.json" hidden>
+        </div>
+        <span class="toast small" id="data-msg" role="status"></span>
+        <div class="confirm">
+          <button class="btn danger" type="button" id="clear-btn">Delete all check-ins</button>
+          <span id="clear-confirm" hidden class="confirm"><span class="small">Delete <b id="clear-count">0</b> check-ins for good?</span>
+            <button class="btn danger" type="button" id="clear-yes">Delete</button>
+            <button class="btn quiet" type="button" id="clear-no">Keep</button></span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<nav class="tabs" role="tablist">
+  <button class="tab" role="tab" data-view="checkin" aria-selected="true">Check in</button>
+  <button class="tab" role="tab" data-view="history" aria-selected="false">History</button>
+  <button class="tab" role="tab" data-view="patterns" aria-selected="false">Patterns</button>
+  <button class="tab" role="tab" data-view="settings" aria-selected="false">Settings</button>
+</nav>
+
+<script>
+(() => {
+  const KEY = "digestiv.entries.v1";
+  const SYMPTOMS = [["bloating", "Bloating"], ["pain", "Cramping or pain"], ["gas", "Gas"], ["reflux", "Reflux"], ["nausea", "Nausea"]];
+  const LEVELS = ["None", "Mild", "Mod.", "Strong"];
+  const BRISTOL = [
+    "Separate hard lumps (constipated)", "Lumpy and sausage-shaped (constipated)", "Sausage with cracks (normal)",
+    "Smooth, soft sausage (ideal)", "Soft blobs with clear edges (lacking fibre)", "Mushy with ragged edges (mild diarrhoea)", "Watery, no solid pieces (diarrhoea)"
+  ];
+  const TAGS = {
+    food: ["Dairy", "Gluten / wheat", "Beans & lentils", "Onion / garlic", "Spicy", "Fried / greasy", "Red meat", "Raw veg / salad", "Lots of fruit", "Sweets / sugar", "Artificial sweetener", "Coffee", "Alcohol", "Fizzy drinks", "Ate late (after 9pm)", "Big portions", "Skipped a meal", "Ate out / takeaway"],
+    morning: ["Had coffee", "Exercised", "Went for a walk", "Bengal Spice", "Was rushed", "Stretched"],
+    helpers: ["Kiwi", "Prunes", "Sunflower seeds", "Psyllium husk"],
+    other: ["On my period", "Feeling unwell", "Travelling", "Antibiotics"]
+  };
+  const SCORE_WORD = ["", "Rough", "Off", "Okay", "Good", "Great"];
+
+  // ---------- storage ----------
+  let entries = {};
+  function load() { try { entries = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch { entries = {}; } }
+  function persist() { try { localStorage.setItem(KEY, JSON.stringify(entries)); return true; } catch { return false; } }
+  load();
+  try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
+
+  // ---------- dates ----------
+  const iso = d => { const z = new Date(d.getTime() - d.getTimezoneOffset() * 60000); return z.toISOString().slice(0, 10); };
+  const today = () => iso(new Date());
+  const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+  const fmtDay = s => parse(s).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+
+  // ---------- build controls ----------
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const sym = $("#symptoms");
+  SYMPTOMS.forEach(([k, label]) => {
+    sym.insertAdjacentHTML("beforeend", `<div class="name">${label}</div><div class="seg" data-field="${k}" role="group" aria-label="${label}">${LEVELS.map((l, i) => `<button type="button" data-v="${i}">${l}</button>`).join("")}</div>`);
+  });
+  const bq = $(".bristol");
+  BRISTOL.forEach((_, i) => bq.insertAdjacentHTML("beforeend", `<button type="button" data-v="${i + 1}" title="${BRISTOL[i]}">${i + 1}</button>`));
+  $$("[data-tags]").forEach(box => {
+    const g = box.dataset.tags;
+    box.innerHTML = TAGS[g].map(t => `<button type="button" class="chip" data-tag="${t}" aria-pressed="false"><span class="box" aria-hidden="true"></span>${t}</button>`).join("");
+  });
+
+  // ---------- form state ----------
+  let state = blank();
+  function blank() {
+    const prevSleep = Object.values(entries).sort((a, b) => b.date.localeCompare(a.date))[0];
+    return { overall: null, bloating: 0, pain: 0, gas: 0, reflux: 0, nausea: 0, bm: 1, bristol: null, urgency: false,
+      food: "", tags: { food: [], helpers: [], morning: [], other: [] }, water: 6, stressY: null, sleepH: prevSleep ? prevSleep.sleepH : 7, sleepQ: null, stressM: null, notes: "" };
+  }
+  function render() {
+    $$(".seg[data-field]").forEach(seg => {
+      const v = state[seg.dataset.field];
+      seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(v !== null && String(v) === b.dataset.v)));
+    });
+    $$(".stepper").forEach(st => st.querySelector("output").textContent = state[st.dataset.field]);
+    $$("[data-tags]").forEach(box => box.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(state.tags[box.dataset.tags].includes(c.dataset.tag)))));
+    $('[data-toggle="urgency"]').setAttribute("aria-pressed", String(!!state.urgency));
+    $("#f-food").value = state.food || "";
+    $("#f-notes").value = state.notes || "";
+    $("#bristol-q").hidden = state.bm === 0;
+    $("#bristol-desc").textContent = state.bristol ? `Type ${state.bristol}: ${BRISTOL[state.bristol - 1]}` : "1 is hard lumps, 4 is smooth and soft, 7 is watery.";
+  }
+  function openDay(d) {
+    $("#f-date").value = d;
+    state = entries[d] ? JSON.parse(JSON.stringify(entries[d])) : blank();
+    state.tags = Object.assign({ food: [], helpers: [], morning: [], other: [] }, state.tags || {});
+    $("#save-btn").textContent = entries[d] ? "Update check-in" : "Save check-in";
+    $("#toast").textContent = "";
+    setHeader();
+    render();
+  }
+  function setHeader() {
+    const d = $("#f-date").value || today(), isToday = d === today();
+    $("#hdr-title").textContent = isToday ? "How's your gut?" : fmtDay(d);
+    $("#hdr-eyebrow").textContent = isToday ? (entries[d] ? "Checked in today" : "Daily check-in") : (entries[d] ? "Editing check-in" : "Adding a past day");
+  }
+
+  document.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    const seg = b.closest(".seg[data-field]");
+    if (seg && b.dataset.v !== undefined) {
+      const f = seg.dataset.field, v = Number(b.dataset.v);
+      const isSym = SYMPTOMS.some(s => s[0] === f);
+      state[f] = (state[f] === v && !isSym) ? null : v;
+      return render();
+    }
+    const st = b.closest(".stepper");
+    if (st && b.dataset.d) {
+      const f = st.dataset.field, step = Number(st.dataset.step);
+      state[f] = Math.min(Number(st.dataset.max), Math.max(Number(st.dataset.min), Math.round((Number(state[f]) + step * Number(b.dataset.d)) * 2) / 2));
+      return render();
+    }
+    if (b.dataset.tag) {
+      const g = b.closest("[data-tags]").dataset.tags, arr = state.tags[g], i = arr.indexOf(b.dataset.tag);
+      i >= 0 ? arr.splice(i, 1) : arr.push(b.dataset.tag);
+      return render();
+    }
+    if (b.dataset.toggle === "urgency") { state.urgency = !state.urgency; return render(); }
+    if (b.dataset.goto) return show(b.dataset.goto);
+    if (b.dataset.view) return show(b.dataset.view);
+    if (b.dataset.open) { openDay(b.dataset.open); return show("checkin"); }
+  });
+  $("#f-food").addEventListener("input", e => state.food = e.target.value);
+  $("#f-notes").addEventListener("input", e => state.notes = e.target.value);
+  $("#f-date").addEventListener("change", e => { if (e.target.value) openDay(e.target.value > today() ? today() : e.target.value); });
+
+  $("#form").addEventListener("submit", e => {
+    e.preventDefault();
+    const d = $("#f-date").value || today();
+    if (state.overall === null) { $("#toast").textContent = "Pick an overall score (1 to 5) first."; $('[data-field="overall"] button').focus(); return; }
+    if (state.bm === 0) state.bristol = null;
+    entries[d] = Object.assign({}, state, { date: d, savedAt: new Date().toISOString() });
+    $("#toast").textContent = persist() ? (d === today() ? "Saved. See you tomorrow." : `Saved ${fmtDay(d)}.`) : "Couldn't save: this browser is blocking storage.";
+    $("#save-btn").textContent = "Update check-in";
+    setHeader();
+    updateBadge();
+  });
+
+  // ---------- views ----------
+  function show(v) {
+    $$("main").forEach(m => m.hidden = m.id !== "view-" + v);
+    $$(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.view === v)));
+    $("#datebox").hidden = v !== "checkin";
+    if (v !== "checkin") {
+      $("#hdr-eyebrow").textContent = "Digestiv";
+      $("#hdr-title").textContent = { history: "History", patterns: "Patterns", settings: "Settings" }[v];
+    } else setHeader();
+    if (v === "history") renderHistory();
+    if (v === "patterns") renderPatterns();
+    if (v === "settings") $("#clear-confirm").hidden = true;
+    window.scrollTo(0, 0);
+  }
+
+  function list() { return Object.values(entries).sort((a, b) => b.date.localeCompare(a.date)); }
+
+  function renderHistory() {
+    const L = list(), box = $("#history-list");
+    if (!L.length) { box.innerHTML = `<div class="card"><h2>No check-ins yet</h2><p class="muted" style="margin:0">Your days will show up here after your first check-in. Tap any day to edit it.</p><div><button class="btn primary" type="button" data-view="checkin">Check in now</button></div></div>`; return; }
+    box.innerHTML = L.map(e => {
+      const syms = SYMPTOMS.filter(([k]) => e[k] > 0).map(([k, l]) => `${l.split(" ")[0].toLowerCase()} ${LEVELS[e[k]].toLowerCase()}`);
+      const tags = [...(e.tags.food || []), ...(e.tags.helpers || []), ...(e.tags.morning || [])];
+      return `<button class="day" type="button" data-open="${e.date}">
+        <span class="pill" data-v="${e.overall}" style="background:var(--s${e.overall})">${e.overall}</span>
+        <span class="meta"><b>${fmtDay(e.date)} · ${SCORE_WORD[e.overall]}</b>
+        <span class="tags">${syms.length ? syms.join(", ") : "No symptoms"}${e.bristol ? ` · Bristol ${e.bristol}` : ""}${e.stressY ? ` · stress ${e.stressY}/5` : ""}</span>
+        ${tags.length ? `<span class="tags">${tags.join(" · ")}</span>` : ""}</span></button>`;
+    }).join("");
+  }
+
+  // ---------- patterns ----------
+  function sample() {
+    // Example data for the empty state only; never saved.
+    const out = [], rnd = (s => () => (s = (s * 9301 + 49297) % 233280) / 233280)(7);
+    for (let i = 27; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const kiwi = rnd() < .4, dairy = rnd() < .35, garlic = rnd() < .3, late = rnd() < .3, walk = rnd() < .5, stress = 1 + Math.floor(rnd() * 5);
+      let s = 4 - (dairy ? 1.2 : 0) - (garlic ? .8 : 0) - (late ? .5 : 0) + (walk ? .6 : 0) + (kiwi ? .5 : 0) - (stress >= 4 ? .9 : 0) + (rnd() - .5);
+      s = Math.max(1, Math.min(5, Math.round(s)));
+      out.push({ date: iso(d), overall: s, stressY: stress, sleepH: 6 + Math.round(rnd() * 4) / 2, bloating: 5 - s > 1 ? 2 : 0, pain: 0, gas: 0, reflux: 0, nausea: 0,
+        tags: { food: [dairy && "Dairy", garlic && "Onion / garlic", late && "Ate late (after 9pm)"].filter(Boolean), helpers: kiwi ? ["Kiwi"] : [], morning: [walk && "Went for a walk", "Had coffee"].filter(Boolean), other: [] } });
+    }
+    return out;
+  }
+  const avg = a => a.reduce((x, y) => x + y, 0) / a.length;
+  function factors(L) {
+    const rows = [], MIN = 3;
+    const test = (label, pred) => {
+      const yes = L.filter(pred).map(e => e.overall), no = L.filter(e => !pred(e)).map(e => e.overall);
+      if (yes.length >= MIN && no.length >= MIN) rows.push({ label, d: avg(yes) - avg(no), n: yes.length });
+    };
+    ["food", "helpers", "morning", "other"].forEach(g => TAGS[g].forEach(t => test(t, e => (e.tags[g] || []).includes(t))));
+    test("High stress yesterday (4 to 5)", e => e.stressY >= 4);
+    test("High stress this morning (4 to 5)", e => e.stressM >= 4);
+    test("Under 6.5 hours of sleep", e => e.sleepH < 6.5);
+    test("Poor sleep quality (1 to 2)", e => e.sleepQ && e.sleepQ <= 2);
+    test("Under 5 glasses of water", e => e.water < 5);
+    return rows.filter(r => Math.abs(r.d) >= 0.3).sort((a, b) => a.d - b.d);
+  }
+  function chart(L) {
+    const days = 28, W = 340, H = 120, pad = { l: 22, r: 8, t: 10, b: 20 };
+    const byDate = Object.fromEntries(L.map(e => [e.date, e]));
+    const pts = [];
+    for (let i = days - 1; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); const k = iso(d); pts.push({ k, e: byDate[k], x: days - 1 - i }); }
+    const X = i => pad.l + i * (W - pad.l - pad.r) / (days - 1), Y = v => pad.t + (5 - v) * (H - pad.t - pad.b) / 4;
+    const grid = [1, 2, 3, 4, 5].map(v => `<line x1="${pad.l}" x2="${W - pad.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pad.l - 7}" y="${Y(v) + 4}" font-size="10" text-anchor="end" fill="var(--muted)">${v}</text>`).join("");
+    const have = pts.filter(p => p.e);
+    let path = "", seg = [];
+    pts.forEach(p => { if (p.e) seg.push(`${X(p.x).toFixed(1)},${Y(p.e.overall).toFixed(1)}`); else if (seg.length) { path += "M" + seg.join("L"); seg = []; } });
+    if (seg.length) path += "M" + seg.join("L");
+    const dots = have.map(p => `<circle cx="${X(p.x)}" cy="${Y(p.e.overall)}" r="${p === have[have.length - 1] ? 4.5 : 3}" fill="var(--s${p.e.overall})" stroke="var(--surface)" stroke-width="1.5"/>`).join("");
+    const lbl = i => { const d = parse(pts[i].k); return d.toLocaleDateString(undefined, { day: "numeric", month: "short" }); };
+    return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gut score over the last 4 weeks">${grid}
+      <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/>${dots}
+      <text x="${X(0)}" y="${H - 4}" font-size="10" fill="var(--muted)">${lbl(0)}</text><text x="${X(days - 1)}" y="${H - 4}" font-size="10" text-anchor="end" fill="var(--muted)">${lbl(days - 1)}</text></svg>`;
+  }
+  function renderPatterns() {
+    const real = list(), isExample = real.length < 5, L = isExample ? sample() : real;
+    const F = factors(L);
+    const bad = F.filter(r => r.d < 0), good = F.filter(r => r.d > 0).reverse();
+    const row = r => {
+      const w = Math.min(50, Math.abs(r.d) / 2 * 50);
+      return `<div class="factor"><span>${r.label}<br><span class="n">${r.n} days</span></span>
+        <span class="bar"><i style="${r.d < 0 ? `right:50%;width:${w}%;background:var(--s1)` : `left:50%;width:${w}%;background:var(--s5)`}"></i></span>
+        <span class="delta" style="color:var(${r.d < 0 ? "--s1" : "--s5"})">${r.d > 0 ? "+" : "−"}${Math.abs(r.d).toFixed(1)}</span></div>`;
+    };
+    const last7 = L.filter(e => parse(e.date) > new Date(Date.now() - 7 * 864e5)).map(e => e.overall);
+    const recent = last7.length ? avg(last7) : 0;
+    $("#patterns").innerHTML = `
+      ${isExample ? `<div class="banner"><p><span class="example-tag">Example</span> These are made-up days to show how this page works. Your own patterns appear after 5 check-ins (you have ${real.length}).</p></div>` : ""}
+      <div class="card"><div class="row" style="justify-content:space-between"><h2>Gut score, last 4 weeks</h2><span class="muted small">${isFinite(recent) && recent ? `7 day average ${recent.toFixed(1)}` : ""}</span></div>${chart(L)}</div>
+      <div class="card"><h2>Linked to worse days</h2><p class="muted small" style="margin:0">Your average gut score the morning after, compared with days without it.</p>
+        <div>${bad.length ? bad.map(row).join("") : `<p class="muted small">Nothing stands out yet.</p>`}</div></div>
+      <div class="card"><h2>Linked to better days</h2>
+        <div>${good.length ? good.map(row).join("") : `<p class="muted small">Nothing stands out yet.</p>`}</div></div>
+      <p class="muted small">These are patterns, not proof. A factor needs at least 3 days with it and 3 without before it shows here, and the picture gets clearer over a few weeks. Worth bringing to a doctor or dietitian.</p>`;
+  }
+
+  // ---------- reminder (.ics) ----------
+  const inFrame = (() => { try { return window.self !== window.top; } catch { return true; } })();
+  $("#frame-note").hidden = !inFrame;
+  try { const t = localStorage.getItem("digestiv.remind"); if (t) $("#f-remind").value = t; } catch {}
+  function download(name, type, text) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name;
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  $("#ics-btn").addEventListener("click", () => {
+    const t = $("#f-remind").value || "08:30";
+    try { localStorage.setItem("digestiv.remind", t); } catch {}
+    const [h, m] = t.split(":");
+    const d = today().replace(/-/g, ""), stamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
+    const url = location.protocol.startsWith("http") && !inFrame ? location.href.split("#")[0] : "";
+    const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Digestiv//EN", "BEGIN:VEVENT",
+      `UID:digestiv-daily-${stamp}@digestiv`, `DTSTAMP:${stamp}`, `DTSTART:${d}T${h}${m}00`, "DURATION:PT5M",
+      "RRULE:FREQ=DAILY", "SUMMARY:Digestiv check-in", `DESCRIPTION:How's your gut today? One minute check-in.${url ? "\\n" + url : ""}`,
+      ...(url ? [`URL:${url}`] : []), "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Digestiv check-in", "TRIGGER:PT0M", "END:VALARM",
+      "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+    download("digestiv-reminder.ics", "text/calendar", ics);
+    try { localStorage.setItem("digestiv.reminderSet", "1"); } catch {}
+    $("#reminder-banner").hidden = true;
+  });
+  try { $("#reminder-banner").hidden = !!localStorage.getItem("digestiv.reminderSet"); } catch { $("#reminder-banner").hidden = false; }
+
+  // ---------- data ----------
+  const msg = t => $("#data-msg").textContent = t;
+  $("#export-json").addEventListener("click", () => download(`digestiv-backup-${today()}.json`, "application/json", JSON.stringify({ app: "digestiv", version: 1, entries }, null, 2)));
+  $("#export-csv").addEventListener("click", () => {
+    const cols = ["date", "overall", ...SYMPTOMS.map(s => s[0]), "bm", "bristol", "urgency", "water", "stressY", "sleepH", "sleepQ", "stressM", "food_tags", "helpers_tags", "morning_tags", "other_tags", "food", "notes"];
+    const q = v => { v = v === null || v === undefined ? "" : String(v); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
+    const rows = list().reverse().map(e => cols.map(c => q(c.endsWith("_tags") ? (e.tags[c.split("_")[0]] || []).join("; ") : e[c])).join(","));
+    download(`digestiv-${today()}.csv`, "text/csv", [cols.join(","), ...rows].join("\n"));
+  });
+  $("#import-file").addEventListener("change", async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const data = JSON.parse(await f.text()), inc = data.entries || {};
+      const n = Object.keys(inc).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k) && inc[k] && inc[k].overall).length;
+      if (!n) throw new Error();
+      Object.keys(inc).forEach(k => { if (/^\d{4}-\d{2}-\d{2}$/.test(k) && inc[k] && inc[k].overall) entries[k] = inc[k]; });
+      persist(); msg(`Imported ${n} check-ins.`); updateBadge();
+    } catch { msg("That file isn't a Digestiv backup. Choose a .json file exported from this app."); }
+    e.target.value = "";
+  });
+  $("#clear-btn").addEventListener("click", () => { $("#clear-count").textContent = Object.keys(entries).length; $("#clear-confirm").hidden = false; });
+  $("#clear-no").addEventListener("click", () => $("#clear-confirm").hidden = true);
+  $("#clear-yes").addEventListener("click", () => { entries = {}; persist(); $("#clear-confirm").hidden = true; msg("All check-ins deleted."); updateBadge(); });
+
+  // ---------- badge + offline ----------
+  function updateBadge() {
+    try { if ("setAppBadge" in navigator) entries[today()] ? navigator.clearAppBadge() : navigator.setAppBadge(1); } catch {}
+  }
+  updateBadge();
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { updateBadge(); if (!$("#view-checkin").hidden && $("#f-date").value !== today() && !entries[$("#f-date").value]) openDay(today()); } });
+  if ("serviceWorker" in navigator && !inFrame && /^https:|^http:\/\/localhost/.test(location.href)) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+
+  $("#f-date").max = today();
+  const start = location.hash.replace("#", "");
+  openDay(today());
+  if (["history", "patterns", "settings"].includes(start)) show(start); else show("checkin");
+})();
+</script>

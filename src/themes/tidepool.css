@@ -1,0 +1,26 @@
+/* Tidepool: cool, calm, editorial. Each section sits on its own card; serif headings. */
+:root {
+  --bg: #e9eef3; --surface: #ffffff; --ink: #15233a; --muted: #5a6880; --line: #d3dce6;
+  --accent: #2348a8; --accent-ink: #ffffff; --accent-soft: #dfe7f8;
+  --display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --body: "DM Sans", "Helvetica Neue", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1420; --surface: #152033; --ink: #e2e9f4; --muted: #94a3bb; --line: #26344b;
+  --accent: #8fb0ff; --accent-ink: #0d1420; --accent-soft: #1d2d4d; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0d1420; --surface: #152033; --ink: #e2e9f4; --muted: #94a3bb; --line: #26344b;
+  --accent: #8fb0ff; --accent-ink: #0d1420; --accent-soft: #1d2d4d; color-scheme: dark; }
+h1 { font-weight: 400; font-size: 2.2rem; letter-spacing: 0; }
+h2 { font-weight: 400; font-size: 1.35rem; }
+.wrap form { display: grid; gap: 14px; }
+section.block, section.block:first-of-type { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px 16px; }
+.chip, .btn { border-radius: 999px; }
+.seg button { border-radius: 14px; }
+.seg button { background: var(--bg); border-color: transparent; }
+.chip { background: var(--bg); border-color: transparent; }
+.checks .chip { border-radius: 12px; }
+.savebar { border-top: 0; justify-content: stretch; }
+.savebar .btn.primary { flex: 1; padding-block: 14px; }
+nav.tabs { background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(10px); }
+.tab[aria-selected="true"] { background: transparent; text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }

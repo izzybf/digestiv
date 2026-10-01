@@ -1,0 +1,29 @@
+/* Sorbet: playful and rounded. Big friendly type, chunky buttons, soft plum and peach. */
+:root {
+  --bg: #f6effa; --surface: #ffffff; --ink: #2e1838; --muted: #74607e; --line: #e6d8ee;
+  --accent: #9b2f7d; --accent-ink: #ffffff; --accent-soft: #fbe1ec;
+  --display: "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --body: "Nunito", "Avenir Next", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1b1120; --surface: #261830; --ink: #f3e6f6; --muted: #b59fbe; --line: #3a2747;
+  --accent: #f08cc8; --accent-ink: #2a0f22; --accent-soft: #3d1d36; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1b1120; --surface: #261830; --ink: #f3e6f6; --muted: #b59fbe; --line: #3a2747;
+  --accent: #f08cc8; --accent-ink: #2a0f22; --accent-soft: #3d1d36; color-scheme: dark; }
+body { font-size: 16px; }
+h1 { font-size: 2.3rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; }
+h2 { font-size: 1.45rem; font-weight: 700; }
+.eyebrow { color: var(--accent); }
+section.block { border-top: 2px dashed var(--line); }
+.seg button, .chip, .btn, .checks .chip { border-width: 2px; border-radius: 16px; box-shadow: 0 3px 0 var(--line); }
+.seg button[aria-pressed="true"], .chip[aria-pressed="true"] { box-shadow: 0 3px 0 color-mix(in srgb, var(--accent) 55%, var(--ink)); }
+.seg.score button { padding-block: 12px; font-family: var(--display); font-size: 1.15rem; font-weight: 700; }
+.chip { padding: 8px 14px; font-weight: 600; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.checks .chip[aria-pressed="true"] .box { background: var(--accent-ink); border-color: var(--accent-ink); }
+.checks .chip[aria-pressed="true"] .box::after { border-color: var(--accent); }
+.btn.primary { padding: 14px 22px; font-size: 1.05rem; box-shadow: 0 4px 0 color-mix(in srgb, var(--accent) 55%, var(--ink)); }
+.pill { border-radius: 50%; }
+nav.tabs { margin: 0 10px 10px; left: 0; right: 0; border: 2px solid var(--line); border-radius: 22px; bottom: env(safe-area-inset-bottom, 0px); padding-bottom: 6px; }
+.tab[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }

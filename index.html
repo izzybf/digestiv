@@ -118,9 +118,9 @@ nav.tabs {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
   background: var(--surface); border-top: 1px solid var(--line);
   padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
 }
-.tab { border: 0; background: transparent; padding: 8px 4px; border-radius: 10px; font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+.tab { border: 0; background: transparent; padding: 8px 2px; border-radius: 10px; font-size: 0.8rem; white-space: nowrap; color: var(--muted); font-weight: 600; }
 .tab[aria-selected="true"] { color: var(--accent); background: var(--accent-soft); }
 
 .pill { width: 3rem; height: 3rem; border-radius: 12px; display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 1.3rem; color: #fff; }
@@ -160,7 +160,17 @@ header.top .titles { flex: 1; min-width: 0; }
 .sym { display: grid; grid-template-columns: minmax(0, 6.5rem) minmax(0, 1fr); gap: 8px 10px; align-items: center; }
 .sym .name { font-size: 0.95rem; font-weight: 600; }
 .sym .seg button { padding: 8px 2px; font-size: 0.8rem; }
-.toast button { font: inherit; color: var(--accent); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 0; font-weight: 600; }
+.linkish, .toast button { font: inherit; color: var(--accent); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 0; font-weight: 600; }
+.med { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; padding-block: 10px; border-top: 1px solid var(--line); }
+.med:first-child { border-top: 0; }
+.med .info { min-width: 0; display: grid; gap: 2px; }
+.med .info .tags { font-size: 0.82rem; color: var(--muted); overflow-wrap: anywhere; }
+.med .acts { display: flex; gap: 6px; }
+.med .acts .btn { padding: 7px 12px; font-size: 0.85rem; }
+.field { display: grid; gap: 4px; }
+.field label { font-weight: 600; font-size: 0.9rem; }
+.field input[type="text"] { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; width: 100%; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 10px; }
 .cycle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding-block: 10px; border-top: 1px solid var(--line); }
 .cycle:first-child { border-top: 0; }
 .half { font: inherit; color: inherit; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: grid; gap: 4px; align-content: start; cursor: pointer; min-width: 0; }
@@ -225,7 +235,7 @@ section.block, section.block:first-of-type { background: var(--surface); border:
 .checks .chip { background: var(--bg); }
 .checks .chip[aria-pressed="true"] .box { background: var(--accent-ink); border-color: var(--accent-ink); }
 .checks .chip[aria-pressed="true"] .box::after { border-color: var(--accent); }
-.stepper, textarea, input[type="date"], input[type="time"] { background: var(--bg); border-color: transparent; }
+.stepper, textarea, input[type="date"], input[type="time"], .field input[type="text"] { background: var(--bg); border-color: transparent; }
 .formhead input[type="date"] { background: var(--surface); }
 .banner { background: var(--surface); box-shadow: var(--shadow); border-radius: 16px; }
 .btn { border: 0; border-radius: 14px; padding: 12px 18px; background: var(--surface); box-shadow: var(--shadow); }
@@ -287,6 +297,11 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
         <div class="q">
           <div class="label">Gut helpers</div>
           <div class="checks" data-tags="helpers"></div>
+        </div>
+        <div class="q">
+          <div class="label">Medications taken</div>
+          <div class="checks" id="d-meds"></div>
+          <p class="hint" id="d-meds-empty" style="margin:0">Add your medications in the <button type="button" class="linkish" data-view="meds">Meds tab</button> to tick them off here.</p>
         </div>
         <div class="q">
           <div class="label">Glasses of water</div>
@@ -423,6 +438,36 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     <div class="stack" id="patterns"></div>
   </main>
 
+  <!-- MEDS -->
+  <main id="view-meds" hidden>
+    <div class="stack">
+      <div class="card">
+        <h2>Current medications</h2>
+        <div id="meds-current"></div>
+      </div>
+      <form class="card" id="med-form" autocomplete="off">
+        <h2 id="med-form-title">Add a medication</h2>
+        <input type="hidden" id="med-id">
+        <div class="field"><label for="med-name">Name</label><input type="text" id="med-name" placeholder="e.g. Omeprazole"></div>
+        <div class="grid2">
+          <div class="field"><label for="med-dose">Dose</label><input type="text" id="med-dose" placeholder="e.g. 20 mg"></div>
+          <div class="field"><label for="med-sched">How often</label><input type="text" id="med-sched" placeholder="e.g. Daily"></div>
+        </div>
+        <div class="field"><label for="med-start">Started</label><input type="date" id="med-start"></div>
+        <div class="field"><label for="med-notes">Notes</label><input type="text" id="med-notes" placeholder="What it's for, who prescribed it…"></div>
+        <div class="row" style="gap:8px">
+          <button class="btn primary" type="submit" id="med-save">Add medication</button>
+          <button class="btn quiet" type="button" id="med-cancel" hidden>Cancel</button>
+          <span class="toast small" id="med-msg" role="status"></span>
+        </div>
+      </form>
+      <div class="card" id="meds-past-card" hidden>
+        <h2>Past medications</h2>
+        <div id="meds-past"></div>
+      </div>
+    </div>
+  </main>
+
   <!-- SETTINGS -->
   <main id="view-settings" hidden>
     <div class="stack">
@@ -454,7 +499,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
         <span class="toast small" id="data-msg" role="status"></span>
         <div class="confirm">
           <button class="btn danger" type="button" id="clear-btn">Delete all check-ins</button>
-          <span id="clear-confirm" hidden class="confirm"><span class="small">Delete <b id="clear-count">0</b> logs for good?</span>
+          <span id="clear-confirm" hidden class="confirm"><span class="small">Delete <b id="clear-count">0</b> logs and medications for good?</span>
             <button class="btn danger" type="button" id="clear-yes">Delete</button>
             <button class="btn quiet" type="button" id="clear-no">Keep</button></span>
         </div>
@@ -467,6 +512,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   <button class="tab" role="tab" data-view="checkin" aria-selected="true">Check in</button>
   <button class="tab" role="tab" data-view="history" aria-selected="false">History</button>
   <button class="tab" role="tab" data-view="patterns" aria-selected="false">Patterns</button>
+  <button class="tab" role="tab" data-view="meds" aria-selected="false">Meds</button>
   <button class="tab" role="tab" data-view="settings" aria-selected="false">Settings</button>
 </nav>
 
@@ -510,7 +556,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   // ---------- storage ----------
-  let db = { days: {}, mornings: {} };
+  let db = { days: {}, mornings: {}, meds: [] };
   function migrateV1(entries) {
     // v1 stored one entry per morning: the result plus what was eaten the day before.
     const out = { days: {}, mornings: {} };
@@ -535,23 +581,23 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   function load() {
     try {
       const v2 = JSON.parse(localStorage.getItem(KEY2) || "null");
-      if (v2 && v2.days) { db = { days: v2.days || {}, mornings: v2.mornings || {} }; return; }
+      if (v2 && v2.days) { db = { days: v2.days || {}, mornings: v2.mornings || {}, meds: v2.meds || [] }; return; }
     } catch {}
     try {
       const v1 = JSON.parse(localStorage.getItem(KEY1) || "null");
-      if (v1 && Object.keys(v1).length) { db = migrateV1(v1); persist(); }  // v1 is left in place as a backup
+      if (v1 && Object.keys(v1).length) { db = Object.assign(migrateV1(v1), { meds: [] }); persist(); }  // v1 is left in place as a backup
     } catch {}
   }
-  function persist() { try { localStorage.setItem(KEY2, JSON.stringify({ version: 2, days: db.days, mornings: db.mornings })); return true; } catch { return false; } }
+  function persist() { try { localStorage.setItem(KEY2, JSON.stringify({ version: 2, days: db.days, mornings: db.mornings, meds: db.meds })); return true; } catch { return false; } }
   load();
   try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
 
-  const blankDay = d => ({ date: d, food: "", tags: { food: [], helpers: [], other: [] }, water: 6, stress: null, sym: blankSym(), notes: "", status: null });
+  const blankDay = d => ({ date: d, food: "", tags: { food: [], helpers: [], other: [] }, water: 6, stress: null, sym: blankSym(), meds: [], notes: "", status: null });
   function blankMorning(d) {
     const last = Object.values(db.mornings).filter(m => m.date < d).sort((a, b) => b.date.localeCompare(a.date))[0];
     return { date: d, sleepH: last ? last.sleepH : 7, sleepQ: null, stressM: null, tags: { morning: [] }, attemptAt: "", bm: 1, bristol: null, emptied: null, urgency: false, overall: null, notes: "", status: null };
   }
-  const normDay = r => Object.assign(blankDay(r.date), r, { tags: Object.assign({ food: [], helpers: [], other: [] }, r.tags || {}), sym: Object.assign(blankSym(), r.sym || symFromEvents(r.events)) });
+  const normDay = r => Object.assign(blankDay(r.date), r, { tags: Object.assign({ food: [], helpers: [], other: [] }, r.tags || {}), sym: Object.assign(blankSym(), r.sym || symFromEvents(r.events)), meds: r.meds || [] });
   const normMorning = r => Object.assign(blankMorning(r.date), r, { tags: Object.assign({ morning: [] }, r.tags || {}) });
 
   // ---------- build controls ----------
@@ -580,7 +626,13 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     f.querySelectorAll("[data-tags]").forEach(box => box.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String((st.tags[box.dataset.tags] || []).includes(c.dataset.tag)))));
     f.querySelectorAll("[data-toggle]").forEach(b => b.setAttribute("aria-pressed", String(!!st[b.dataset.toggle])));
     f.querySelectorAll("[data-text]").forEach(t => { if (document.activeElement !== t) t.value = st[t.dataset.text] || ""; });
-    if (p === "day") $$("[data-sym]").forEach(seg => seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(st.sym[seg.dataset.sym] === Number(b.dataset.l)))));
+    if (p === "day") {
+      $$("[data-sym]").forEach(seg => seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(st.sym[seg.dataset.sym] === Number(b.dataset.l)))));
+      // medications active on this day, plus any already ticked
+      const list = db.meds.filter(m => st.meds.includes(m.id) || ((!m.start || m.start <= st.date) && (!m.end || m.end >= st.date)));
+      $("#d-meds").innerHTML = list.map(m => `<button type="button" class="chip" data-med="${m.id}" aria-pressed="${st.meds.includes(m.id)}"><span class="box" aria-hidden="true"></span>${esc(m.name)}${m.dose ? ` <span class="hint">${esc(m.dose)}</span>` : ""}</button>`).join("");
+      $("#d-meds-empty").hidden = list.length > 0;
+    }
     else {
       $("#m-bm-detail").hidden = st.bm === 0;
       $("#bristol-desc").textContent = st.bristol ? `Type ${st.bristol}: ${BRISTOL[st.bristol - 1]}` : "1 is hard lumps, 4 is smooth and soft, 7 is watery.";
@@ -642,6 +694,14 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
 
   document.addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.med) { const a = S.day.meds, i = a.indexOf(b.dataset.med); i >= 0 ? a.splice(i, 1) : a.push(b.dataset.med); render("day"); autosave("day"); return; }
+    if (b.dataset.medEdit) return editMed(b.dataset.medEdit);
+    if (b.dataset.medStop) { const m = medById(b.dataset.medStop); if (m) { m.end = today(); persist(); renderMeds(); medMsg(`Moved ${m.name} to past medications.`); } return; }
+    if (b.dataset.medRestart) { const m = medById(b.dataset.medRestart); if (m) { m.end = null; persist(); renderMeds(); medMsg(`${m.name} is current again.`); } return; }
+    if (b.dataset.medDel) {
+      if (pendingDel !== b.dataset.medDel) { pendingDel = b.dataset.medDel; b.textContent = "Tap again to delete"; return; }
+      const m = medById(b.dataset.medDel); db.meds = db.meds.filter(x => x.id !== b.dataset.medDel); pendingDel = null; persist(); renderMeds(); if (m) medMsg(`Deleted ${m.name}.`); return;
+    }
     const symSeg = b.closest("[data-sym]");
     if (symSeg) { S.day.sym[symSeg.dataset.sym] = Number(b.dataset.l); render("day"); autosave("day"); return; }
     const f = b.closest("form[data-part]"), p = f && f.dataset.part;
@@ -704,12 +764,55 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     $$(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.view === v)));
     if (v === "checkin") setHeader();
     else {
-      document.body.dataset.part = ""; $("#hdr-icon").innerHTML = ""; $("#hdr-eyebrow").textContent = "Digestiv"; $("#hdr-title").textContent = { history: "History", patterns: "Patterns", settings: "Settings" }[v]; }
+      document.body.dataset.part = ""; $("#hdr-icon").innerHTML = ""; $("#hdr-eyebrow").textContent = "Digestiv"; $("#hdr-title").textContent = { history: "History", patterns: "Patterns", meds: "Medications", settings: "Settings" }[v]; }
     if (v === "history") renderHistory();
     if (v === "patterns") renderPatterns();
     if (v === "settings") $("#clear-confirm").hidden = true;
+    if (v === "meds") { resetMedForm(); renderMeds(); }
     window.scrollTo(0, 0);
   }
+
+  // ---------- medications ----------
+  let pendingDel = null;
+  const medById = id => db.meds.find(m => m.id === id);
+  const medMsg = t => $("#med-msg").textContent = t;
+  function medRow(m, past) {
+    const since = m.start ? `since ${fmtDay(m.start)}` : "";
+    const meta = [m.dose, m.schedule, past ? `${m.start ? fmtDay(m.start) : "?"} to ${fmtDay(m.end)}` : since].filter(Boolean).map(esc).join(" · ");
+    return `<div class="med"><div class="info"><b>${esc(m.name)}</b>${meta ? `<span class="tags">${meta}</span>` : ""}${m.notes ? `<span class="tags">${esc(m.notes)}</span>` : ""}</div>
+      <div class="acts">${past
+        ? `<button class="btn" type="button" data-med-restart="${m.id}">Restart</button><button class="btn danger" type="button" data-med-del="${m.id}">Delete</button>`
+        : `<button class="btn" type="button" data-med-edit="${m.id}">Edit</button><button class="btn" type="button" data-med-stop="${m.id}">Stopped</button>`}</div></div>`;
+  }
+  function renderMeds() {
+    pendingDel = null;
+    const cur = db.meds.filter(m => !m.end || m.end > today()), past = db.meds.filter(m => m.end && m.end <= today());
+    $("#meds-current").innerHTML = cur.length ? cur.map(m => medRow(m, false)).join("") : `<p class="muted small" style="margin:0">No medications yet. Add one below and it will show up as a checkbox in your day log.</p>`;
+    $("#meds-past-card").hidden = !past.length;
+    $("#meds-past").innerHTML = past.map(m => medRow(m, true)).join("");
+  }
+  function resetMedForm() {
+    $("#med-id").value = ""; ["name", "dose", "sched", "notes"].forEach(k => $("#med-" + k).value = ""); $("#med-start").value = today();
+    $("#med-form-title").textContent = "Add a medication"; $("#med-save").textContent = "Add medication"; $("#med-cancel").hidden = true;
+  }
+  function editMed(id) {
+    const m = medById(id); if (!m) return;
+    $("#med-id").value = m.id; $("#med-name").value = m.name; $("#med-dose").value = m.dose || ""; $("#med-sched").value = m.schedule || ""; $("#med-start").value = m.start || ""; $("#med-notes").value = m.notes || "";
+    $("#med-form-title").textContent = `Edit ${m.name}`; $("#med-save").textContent = "Save changes"; $("#med-cancel").hidden = false; medMsg("");
+    $("#med-form").scrollIntoView({ block: "start" }); $("#med-name").focus();
+  }
+  $("#med-cancel").addEventListener("click", () => { resetMedForm(); medMsg(""); });
+  $("#med-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const name = $("#med-name").value.trim();
+    if (!name) { medMsg("Enter the medication's name first."); $("#med-name").focus(); return; }
+    const data = { name, dose: $("#med-dose").value.trim(), schedule: $("#med-sched").value.trim(), start: $("#med-start").value || null, notes: $("#med-notes").value.trim() };
+    const id = $("#med-id").value, m = id && medById(id);
+    if (m) Object.assign(m, data); else db.meds.push(Object.assign({ id: "med" + Date.now().toString(36), end: null }, data));
+    medMsg(persist() ? (m ? `Saved ${name}.` : `Added ${name}.`) : failMsg);
+    resetMedForm(); renderMeds(); render("day");
+  });
+  $("#med-start").max = today();
 
   function symSummary(day) {
     const sym = normDay(day).sym;
@@ -768,6 +871,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     ["food", "helpers", "other"].forEach(g => TAGS[g].forEach(t => test(t, x => (x.d.tags[g] || []).includes(t), true)));
     SYMPTOMS.forEach(([k, l]) => test(`${l} during the day`, x => x.d.sym[k] > 0, true));
     test("A strong symptom during the day", x => Object.values(x.d.sym).some(v => v >= 3), true);
+    db.meds.forEach(m => test(`Took ${m.name}`, x => (x.d.meds || []).includes(m.id), true));
     test("High stress in the day (4 to 5)", x => x.d.stress >= 4, true);
     test("Under 5 glasses of water", x => x.d.water < 5, true);
     TAGS.morning.forEach(t => test(`${t} (morning)`, x => (x.m.tags.morning || []).includes(t)));
@@ -845,16 +949,16 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
 
   // ---------- data ----------
   const msg = t => $("#data-msg").textContent = t;
-  $("#export-json").addEventListener("click", () => { flush(); download(`digestiv-backup-${today()}.json`, "application/json", JSON.stringify({ app: "digestiv", version: 2, days: db.days, mornings: db.mornings }, null, 2)); });
+  $("#export-json").addEventListener("click", () => { flush(); download(`digestiv-backup-${today()}.json`, "application/json", JSON.stringify({ app: "digestiv", version: 2, days: db.days, mornings: db.mornings, meds: db.meds }, null, 2)); });
   $("#export-csv").addEventListener("click", () => {
     flush();
     const q = v => { v = v === null || v === undefined ? "" : String(v); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
-    const cols = ["day", "day_status", "food", "food_tags", "helpers", "other_tags", "water", "stress_day", ...SYMPTOMS.map(s => s[0]), "day_notes",
+    const cols = ["day", "day_status", "food", "food_tags", "helpers", "other_tags", "meds_taken", "water", "stress_day", ...SYMPTOMS.map(s => s[0]), "day_notes",
       "morning", "morning_status", "sleep_hours", "sleep_quality", "morning_tags", "stress_morning", "visit_time", "bowel_movements", "bristol", "emptied", "urgency", "gut_score", "morning_notes"];
     const keys = [...new Set([...Object.keys(db.days), ...Object.keys(db.mornings).map(m => addDays(m, -1))])].sort();
     const rows = keys.map(D => {
       const d = db.days[D] ? normDay(db.days[D]) : null, M = addDays(D, 1), m = db.mornings[M] ? normMorning(db.mornings[M]) : null;
-      return [D, d && d.status, d && d.food, d && d.tags.food.join("; "), d && d.tags.helpers.join("; "), d && d.tags.other.join("; "), d && d.water, d && d.stress,
+      return [D, d && d.status, d && d.food, d && d.tags.food.join("; "), d && d.tags.helpers.join("; "), d && d.tags.other.join("; "), d && d.meds.map(id => (medById(id) || { name: id }).name).join("; "), d && d.water, d && d.stress,
         ...SYMPTOMS.map(([k]) => d ? LEVEL_WORD[d.sym[k]] : ""), d && d.notes,
         m ? M : "", m && m.status, m && m.sleepH, m && m.sleepQ, m && m.tags.morning.join("; "), m && m.stressM, m && m.attemptAt, m && m.bm, m && m.bristol,
         m && (EMPTIED[m.emptied] || ""), m && (m.urgency ? "yes" : ""), m && m.overall, m && m.notes].map(q).join(",");
@@ -870,17 +974,18 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
       let n = 0;
       Object.entries(inc.days).forEach(([k, v]) => { if (ok(k) && v) { db.days[k] = v; n++; } });
       Object.entries(inc.mornings).forEach(([k, v]) => { if (ok(k) && v) { db.mornings[k] = v; n++; } });
+      (data.meds || []).forEach(m => { if (m && m.id && m.name) { const i = db.meds.findIndex(x => x.id === m.id); i >= 0 ? db.meds[i] = m : db.meds.push(m); n++; } });
       if (!n) throw new Error();
       persist(); msg(`Imported ${n} logs.`); updateBadge();
       openDay(S.day.date); openMorning(S.morning.date);
     } catch { msg("That file isn't a Digestiv backup. Choose a .json file exported from this app."); }
     e.target.value = "";
   });
-  $("#clear-btn").addEventListener("click", () => { $("#clear-count").textContent = Object.keys(db.days).length + Object.keys(db.mornings).length; $("#clear-confirm").hidden = false; });
+  $("#clear-btn").addEventListener("click", () => { $("#clear-count").textContent = Object.keys(db.days).length + Object.keys(db.mornings).length + db.meds.length; $("#clear-confirm").hidden = false; });
   $("#clear-no").addEventListener("click", () => $("#clear-confirm").hidden = true);
   $("#clear-yes").addEventListener("click", () => {
     clearTimeout(timer); pending = null;
-    db = { days: {}, mornings: {} }; persist();
+    db = { days: {}, mornings: {}, meds: [] }; persist();
     try { localStorage.removeItem(KEY1); } catch {}
     $("#clear-confirm").hidden = true; msg("All logs deleted."); updateBadge();
     openDay(today()); openMorning(today());
@@ -907,7 +1012,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   updateBadge();
   const start = location.hash.replace("#", "");
   showPart(start === "day" || start === "morning" ? start : defaultPart());
-  show(["history", "patterns", "settings"].includes(start) ? start : "checkin");
+  show(["history", "patterns", "meds", "settings"].includes(start) ? start : "checkin");
 })();
 </script>
 </body>

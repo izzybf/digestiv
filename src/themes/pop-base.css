@@ -1,0 +1,46 @@
+/* Pop base: clean white cards; each part of the check-in owns a colour (morning warm, day cool) that tints the page, controls and buttons. Palette files set --m*, --d*, --brand. */
+:root { --accent: var(--brand); --accent-soft: var(--brand-soft); --accent-ink: var(--brand-ink); --shadow: 0 1px 2px rgba(20, 20, 30, .05), 0 6px 20px rgba(20, 20, 30, .06); }
+body[data-part="morning"], .switch [data-part="morning"], .half.morning { --accent: var(--m); --accent-soft: var(--m-soft); --accent-ink: var(--m-ink); }
+body[data-part="day"], .switch [data-part="day"], .half.day { --accent: var(--d); --accent-soft: var(--d-soft); --accent-ink: var(--d-ink); }
+body[data-part="morning"] { --bg: var(--m-bg); }
+body[data-part="day"] { --bg: var(--d-bg); }
+@media (prefers-reduced-motion: no-preference) { body { transition: background-color .25s; } }
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+h2 { font-size: 1.1rem; font-weight: 700; }
+header.top { align-items: center; justify-content: flex-start; gap: 14px; }
+.emblem { display: grid; flex: none; width: 54px; height: 54px; padding: 13px; border-radius: 18px; background: var(--accent); color: var(--accent-ink); }
+.emblem:empty { display: none; }
+.eyebrow { color: var(--accent); letter-spacing: 0.06em; }
+.switch { gap: 8px; }
+.switch button { border: 0; background: var(--accent-soft); color: var(--ink); border-radius: 18px; padding: 12px 14px; }
+.switch button .ico { color: var(--accent); }
+.switch button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow); }
+.switch button[aria-selected="true"] .ico, .switch button[aria-selected="true"] span { color: inherit; }
+.switch button[aria-selected="true"] span { opacity: .85; }
+.switch button[aria-selected="true"] .status { background: color-mix(in srgb, var(--accent-ink) 22%, transparent); color: inherit; }
+.wrap form { display: grid; gap: 12px; }
+section.block, section.block:first-of-type { background: var(--surface); border: 0; border-radius: 20px; padding: 18px 16px; box-shadow: var(--shadow); }
+.savebar { border-top: 0; }
+.seg { background: var(--bg); border-radius: 12px; padding: 3px; gap: 2px; }
+.seg button { background: transparent; border: 0; border-radius: 9px; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.chip { border: 0; background: var(--bg); padding: 7px 14px; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.checks .chip { background: var(--bg); }
+.checks .chip[aria-pressed="true"] .box { background: var(--accent-ink); border-color: var(--accent-ink); }
+.checks .chip[aria-pressed="true"] .box::after { border-color: var(--accent); }
+.stepper, textarea, input[type="date"], input[type="time"] { background: var(--bg); border-color: transparent; }
+.formhead input[type="date"] { background: var(--surface); }
+.quicklog button { border: 0; background: var(--accent-soft); color: var(--accent); }
+.quicklog button:active { background: var(--accent); color: var(--accent-ink); }
+.banner { background: var(--surface); box-shadow: var(--shadow); border-radius: 16px; }
+.btn { border: 0; border-radius: 14px; padding: 12px 18px; background: var(--surface); box-shadow: var(--shadow); }
+.btn.primary { flex: 1; background: var(--accent); color: var(--accent-ink); }
+.btn.danger { box-shadow: none; border: 1px solid var(--s1); }
+.card { border: 0; box-shadow: var(--shadow); border-radius: 18px; }
+.half { border: 0; box-shadow: var(--shadow); border-radius: 16px; }
+div.half { box-shadow: none; border: 1.5px dashed var(--line); }
+.half .label { color: var(--accent); }
+.status[data-state="submitted"] { background: var(--accent-soft); color: var(--accent); }
+nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding: 6px; border: 0; border-radius: 20px; background: var(--surface); box-shadow: 0 8px 30px rgba(20, 20, 30, .14); }
+.tab[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }

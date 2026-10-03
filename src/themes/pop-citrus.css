@@ -1,0 +1,20 @@
+/* Citrus & Violet: sunflower mornings, electric violet days. */
+:root {
+  --bg: #f5f5f8; --surface: #ffffff; --ink: #19172a; --muted: #67657a; --line: #e5e4ee;
+  --m: #ffb800; --m-soft: #fff0c2; --m-ink: #2b1d00; --m-bg: #fffaea;
+  --d: #6b4eff; --d-soft: #e9e4ff; --d-ink: #ffffff; --d-bg: #f6f4ff;
+  --brand: #6b4eff; --brand-soft: #e9e4ff; --brand-ink: #ffffff;
+  --display: "Urbanist", "Avenir Next", system-ui, sans-serif; --body: "Urbanist", "Avenir Next", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #111019; --surface: #1b1a26; --ink: #ecebf4; --muted: #9897ab; --line: #2b2a3a;
+  --m: #ffc93d; --m-soft: #3a2e0c; --m-ink: #241900; --m-bg: #15130b;
+  --d: #9d8bff; --d-soft: #2a2350; --d-ink: #120d2b; --d-bg: #121020;
+  --brand: #9d8bff; --brand-soft: #2a2350; --brand-ink: #120d2b; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #111019; --surface: #1b1a26; --ink: #ecebf4; --muted: #9897ab; --line: #2b2a3a;
+  --m: #ffc93d; --m-soft: #3a2e0c; --m-ink: #241900; --m-bg: #15130b;
+  --d: #9d8bff; --d-soft: #2a2350; --d-ink: #120d2b; --d-bg: #121020;
+  --brand: #9d8bff; --brand-soft: #2a2350; --brand-ink: #120d2b; color-scheme: dark; }
+body { font-size: 15.5px; }
+.quicklog button, .half .label, .eyebrow { color: color-mix(in srgb, var(--accent) 55%, var(--ink)); }

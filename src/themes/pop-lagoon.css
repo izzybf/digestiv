@@ -1,0 +1,18 @@
+/* Sunrise & Lagoon: tangerine mornings, teal days. */
+:root {
+  --bg: #f4f6f7; --surface: #ffffff; --ink: #14202a; --muted: #62707c; --line: #e3e8ec;
+  --m: #e8541a; --m-soft: #ffe6da; --m-ink: #ffffff; --m-bg: #fff5ef;
+  --d: #0b8a87; --d-soft: #d3f1ef; --d-ink: #ffffff; --d-bg: #f0f8f8;
+  --brand: #0b8a87; --brand-soft: #d3f1ef; --brand-ink: #ffffff;
+  --display: "Outfit", "Avenir Next", system-ui, sans-serif; --body: "Outfit", "Avenir Next", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1417; --surface: #182026; --ink: #e9eef1; --muted: #93a1ab; --line: #26313a;
+  --m: #ff8a5c; --m-soft: #3a2218; --m-ink: #1a0d07; --m-bg: #16110f;
+  --d: #3ccfc9; --d-soft: #12312f; --d-ink: #04201f; --d-bg: #0d1615;
+  --brand: #3ccfc9; --brand-soft: #12312f; --brand-ink: #04201f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1417; --surface: #182026; --ink: #e9eef1; --muted: #93a1ab; --line: #26313a;
+  --m: #ff8a5c; --m-soft: #3a2218; --m-ink: #1a0d07; --m-bg: #16110f;
+  --d: #3ccfc9; --d-soft: #12312f; --d-ink: #04201f; --d-bg: #0d1615;
+  --brand: #3ccfc9; --brand-soft: #12312f; --brand-ink: #04201f; color-scheme: dark; }

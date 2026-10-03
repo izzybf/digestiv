@@ -1,0 +1,40 @@
+/* Cloud: soft white cards floating on cool grey, iOS-style segmented controls, a calm blue accent. */
+:root {
+  --bg: #eef1f5; --surface: #ffffff; --ink: #0f1b2d; --muted: #66748a; --line: #e2e7ee;
+  --accent: #3366ff; --accent-ink: #ffffff; --accent-soft: #e6edff;
+  --display: "Plus Jakarta Sans", "Avenir Next", system-ui, sans-serif;
+  --body: "Plus Jakarta Sans", "Avenir Next", system-ui, sans-serif;
+  --shadow: 0 1px 2px rgba(15, 27, 45, .05), 0 8px 24px rgba(15, 27, 45, .06);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0c1220; --surface: #161e30; --ink: #e8edf6; --muted: #8e9ab0; --line: #243049;
+  --accent: #7c9cff; --accent-ink: #0c1220; --accent-soft: #1f2c4d; --shadow: none; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0c1220; --surface: #161e30; --ink: #e8edf6; --muted: #8e9ab0; --line: #243049;
+  --accent: #7c9cff; --accent-ink: #0c1220; --accent-soft: #1f2c4d; --shadow: none; color-scheme: dark; }
+h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; }
+h2 { font-size: 1.1rem; font-weight: 700; }
+.wrap form { display: grid; gap: 12px; }
+section.block, section.block:first-of-type { background: var(--surface); border: 0; border-radius: 20px; padding: 18px 16px; box-shadow: var(--shadow); }
+.formhead, .savebar { border-top: 0; }
+.seg { background: var(--bg); border-radius: 12px; padding: 3px; gap: 2px; }
+.seg button { background: transparent; border: 0; border-radius: 9px; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(15, 27, 45, .15); }
+:root .seg.score button[aria-pressed="true"] { color: #fff; }
+.chip { border: 0; background: var(--bg); padding: 7px 14px; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.checks .chip { background: var(--bg); }
+.checks .chip[aria-pressed="true"] .box { background: var(--accent-ink); border-color: var(--accent-ink); }
+.checks .chip[aria-pressed="true"] .box::after { border-color: var(--accent); }
+.stepper, textarea, input[type="date"], input[type="time"] { background: var(--bg); border-color: transparent; }
+.quicklog button { border: 0; background: var(--accent-soft); color: var(--accent); }
+.quicklog button:active { background: var(--accent); color: var(--accent-ink); }
+.switch button { border: 0; box-shadow: var(--shadow); border-radius: 16px; }
+.switch button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow); }
+.switch button[aria-selected="true"] span { color: inherit; opacity: .8; }
+.banner { background: var(--accent-soft); border-radius: 16px; }
+.btn { border: 0; border-radius: 14px; padding: 12px 18px; background: var(--surface); box-shadow: var(--shadow); }
+.btn.primary { flex: 1; }
+.card, .half { border: 0; box-shadow: var(--shadow); border-radius: 18px; }
+nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding: 6px; border: 0; border-radius: 20px; box-shadow: 0 8px 30px rgba(15, 27, 45, .15); }
+.tab[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }

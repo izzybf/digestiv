@@ -1,0 +1,28 @@
+/* Slate: a single dark look. Graphite surfaces, thin hairlines, one soft lilac accent, generous type. */
+:root {
+  --bg: #121316; --surface: #1b1d22; --ink: #ecebf0; --muted: #8d8c99; --line: #2a2c33;
+  --accent: #b9a6ff; --accent-ink: #17141f; --accent-soft: #2a2540;
+  --s1: #ef7d6a; --s2: #f0a868; --s3: #e5cd6b; --s4: #9ccf7c; --s5: #6cc49a;
+  --display: "Manrope", "Avenir Next", system-ui, sans-serif;
+  --body: "Manrope", "Avenir Next", system-ui, sans-serif;
+  color-scheme: dark;
+}
+h1 { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.03em; }
+h2 { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.01em; }
+.eyebrow { color: var(--accent); }
+section.block { border-top-color: var(--line); padding-block: 22px; }
+.seg button, .chip, .btn, .stepper, textarea, input[type="date"], input[type="time"] { background: var(--surface); border-color: var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.chip { padding: 7px 14px; }
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+.quicklog button { background: transparent; border-color: var(--line); color: var(--ink); font-weight: 600; }
+.quicklog button:active { background: var(--accent); color: var(--accent-ink); }
+.switch button { background: var(--surface); border-color: var(--line); }
+.switch button[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); box-shadow: none; }
+.banner { background: var(--surface); border: 1px solid var(--line); }
+.btn { border-radius: 12px; padding: 12px 18px; }
+.btn.primary { flex: 1; }
+.card, .half { background: var(--surface); border-color: var(--line); }
+nav.tabs { background: color-mix(in srgb, var(--bg) 80%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.tab[aria-selected="true"] { background: transparent; color: var(--accent); }
+.status[data-state="draft"] { background: #3a3320; color: var(--s3); }

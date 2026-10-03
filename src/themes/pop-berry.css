@@ -1,0 +1,18 @@
+/* Berry & Mint: raspberry mornings, fresh mint days. */
+:root {
+  --bg: #f6f5f5; --surface: #ffffff; --ink: #1f1a1c; --muted: #6d6669; --line: #ebe6e8;
+  --m: #e23a5e; --m-soft: #ffe1e7; --m-ink: #ffffff; --m-bg: #fff5f7;
+  --d: #0c8f68; --d-soft: #d3f5ea; --d-ink: #ffffff; --d-bg: #f1faf7;
+  --brand: #e23a5e; --brand-soft: #ffe1e7; --brand-ink: #ffffff;
+  --display: "DM Sans", "Avenir Next", system-ui, sans-serif; --body: "DM Sans", "Avenir Next", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121011; --surface: #1d191b; --ink: #f0eaec; --muted: #a3999d; --line: #302a2d;
+  --m: #ff7591; --m-soft: #3b1a22; --m-ink: #2a0710; --m-bg: #170e11;
+  --d: #3ddba8; --d-soft: #113a2d; --d-ink: #03261a; --d-bg: #0c1612;
+  --brand: #ff7591; --brand-soft: #3b1a22; --brand-ink: #2a0710; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #121011; --surface: #1d191b; --ink: #f0eaec; --muted: #a3999d; --line: #302a2d;
+  --m: #ff7591; --m-soft: #3b1a22; --m-ink: #2a0710; --m-bg: #170e11;
+  --d: #3ddba8; --d-soft: #113a2d; --d-ink: #03261a; --d-bg: #0c1612;
+  --brand: #ff7591; --brand-soft: #3b1a22; --brand-ink: #2a0710; color-scheme: dark; }

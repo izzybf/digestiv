@@ -130,7 +130,12 @@ nav.tabs {
 
 .switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-bottom: 16px; }
 .switch button { font: inherit; cursor: pointer; text-align: left; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; padding: 10px 12px; display: grid; gap: 2px; min-width: 0; }
-.switch b { font-family: var(--display); font-size: 1rem; }
+.switch b { font-family: var(--display); font-size: 1rem; display: flex; align-items: center; }
+.ico { display: inline-grid; flex: none; width: 1.15em; height: 1.15em; margin-right: 6px; }
+.ico svg, .emblem svg { width: 100%; height: 100%; display: block; }
+.emblem { display: none; }
+header.top .titles { flex: 1; min-width: 0; }
+.half .label { display: flex; align-items: center; font-weight: 700; }
 .switch .status { justify-self: start; margin-top: 4px; }
 .switch span { font-size: 0.78rem; color: var(--muted); line-height: 1.3; }
 .switch button[aria-selected="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
@@ -162,10 +167,80 @@ div.half { cursor: default; border-style: dashed; background: transparent; }
 .pill.sm { width: 2rem; height: 2rem; font-size: 1rem; border-radius: 9px; flex: none; }
 @media (prefers-reduced-motion: no-preference) { .btn, .chip, .seg button, .tab, .switch button { transition: background-color .15s, border-color .15s; } }
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
+<style>
+/* Lagoon theme (chosen 2026-10-03) */
+/* Sunrise & Lagoon: tangerine mornings, teal days. */
+:root {
+  --bg: #f4f6f7; --surface: #ffffff; --ink: #14202a; --muted: #62707c; --line: #e3e8ec;
+  --m: #e8541a; --m-soft: #ffe6da; --m-ink: #ffffff; --m-bg: #fff5ef;
+  --d: #0b8a87; --d-soft: #d3f1ef; --d-ink: #ffffff; --d-bg: #f0f8f8;
+  --brand: #0b8a87; --brand-soft: #d3f1ef; --brand-ink: #ffffff;
+  --display: "Outfit", "Avenir Next", system-ui, sans-serif; --body: "Outfit", "Avenir Next", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1417; --surface: #182026; --ink: #e9eef1; --muted: #93a1ab; --line: #26313a;
+  --m: #ff8a5c; --m-soft: #3a2218; --m-ink: #1a0d07; --m-bg: #16110f;
+  --d: #3ccfc9; --d-soft: #12312f; --d-ink: #04201f; --d-bg: #0d1615;
+  --brand: #3ccfc9; --brand-soft: #12312f; --brand-ink: #04201f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1417; --surface: #182026; --ink: #e9eef1; --muted: #93a1ab; --line: #26313a;
+  --m: #ff8a5c; --m-soft: #3a2218; --m-ink: #1a0d07; --m-bg: #16110f;
+  --d: #3ccfc9; --d-soft: #12312f; --d-ink: #04201f; --d-bg: #0d1615;
+  --brand: #3ccfc9; --brand-soft: #12312f; --brand-ink: #04201f; color-scheme: dark; }
+
+/* Pop base: clean white cards; each part of the check-in owns a colour (morning warm, day cool) that tints the page, controls and buttons. Palette files set --m*, --d*, --brand. */
+:root { --accent: var(--brand); --accent-soft: var(--brand-soft); --accent-ink: var(--brand-ink); --shadow: 0 1px 2px rgba(20, 20, 30, .05), 0 6px 20px rgba(20, 20, 30, .06); }
+body[data-part="morning"], .switch [data-part="morning"], .half.morning { --accent: var(--m); --accent-soft: var(--m-soft); --accent-ink: var(--m-ink); }
+body[data-part="day"], .switch [data-part="day"], .half.day { --accent: var(--d); --accent-soft: var(--d-soft); --accent-ink: var(--d-ink); }
+body[data-part="morning"] { --bg: var(--m-bg); }
+body[data-part="day"] { --bg: var(--d-bg); }
+@media (prefers-reduced-motion: no-preference) { body { transition: background-color .25s; } }
+h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+h2 { font-size: 1.1rem; font-weight: 700; }
+header.top { align-items: center; justify-content: flex-start; gap: 14px; }
+.emblem { display: grid; flex: none; width: 54px; height: 54px; padding: 13px; border-radius: 18px; background: var(--accent); color: var(--accent-ink); }
+.emblem:empty { display: none; }
+.eyebrow { color: var(--accent); letter-spacing: 0.06em; }
+.switch { gap: 8px; }
+.switch button { border: 0; background: var(--accent-soft); color: var(--ink); border-radius: 18px; padding: 12px 14px; }
+.switch button .ico { color: var(--accent); }
+.switch button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: var(--shadow); }
+.switch button[aria-selected="true"] .ico, .switch button[aria-selected="true"] span { color: inherit; }
+.switch button[aria-selected="true"] span { opacity: .85; }
+.switch button[aria-selected="true"] .status { background: color-mix(in srgb, var(--accent-ink) 22%, transparent); color: inherit; }
+.wrap form { display: grid; gap: 12px; }
+section.block, section.block:first-of-type { background: var(--surface); border: 0; border-radius: 20px; padding: 18px 16px; box-shadow: var(--shadow); }
+.savebar { border-top: 0; }
+.seg { background: var(--bg); border-radius: 12px; padding: 3px; gap: 2px; }
+.seg button { background: transparent; border: 0; border-radius: 9px; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.chip { border: 0; background: var(--bg); padding: 7px 14px; }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.checks .chip { background: var(--bg); }
+.checks .chip[aria-pressed="true"] .box { background: var(--accent-ink); border-color: var(--accent-ink); }
+.checks .chip[aria-pressed="true"] .box::after { border-color: var(--accent); }
+.stepper, textarea, input[type="date"], input[type="time"] { background: var(--bg); border-color: transparent; }
+.formhead input[type="date"] { background: var(--surface); }
+.quicklog button { border: 0; background: var(--accent-soft); color: var(--accent); }
+.quicklog button:active { background: var(--accent); color: var(--accent-ink); }
+.banner { background: var(--surface); box-shadow: var(--shadow); border-radius: 16px; }
+.btn { border: 0; border-radius: 14px; padding: 12px 18px; background: var(--surface); box-shadow: var(--shadow); }
+.btn.primary { flex: 1; background: var(--accent); color: var(--accent-ink); }
+.btn.danger { box-shadow: none; border: 1px solid var(--s1); }
+.card { border: 0; box-shadow: var(--shadow); border-radius: 18px; }
+.half { border: 0; box-shadow: var(--shadow); border-radius: 16px; }
+div.half { box-shadow: none; border: 1.5px dashed var(--line); }
+.half .label { color: var(--accent); }
+.status[data-state="submitted"] { background: var(--accent-soft); color: var(--accent); }
+nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding: 6px; border: 0; border-radius: 20px; background: var(--surface); box-shadow: 0 8px 30px rgba(20, 20, 30, .14); }
+.tab[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
+</style>
 
 <div class="wrap">
   <header class="top">
-    <div>
+    <span class="emblem" id="hdr-icon" aria-hidden="true"></span>
+    <div class="titles">
       <div class="eyebrow" id="hdr-eyebrow">Daily check-in</div>
       <h1 id="hdr-title">Digestiv</h1>
     </div>
@@ -174,8 +249,8 @@ div.half { cursor: default; border-style: dashed; background: transparent; }
   <!-- CHECK-IN -->
   <main id="view-checkin">
     <div class="switch" role="tablist" aria-label="Which part">
-      <button type="button" role="tab" data-part="day" aria-selected="true"><b>Day log</b><span>After your bathroom visit, until bed</span><em class="status" id="sw-day"></em></button>
-      <button type="button" role="tab" data-part="morning" aria-selected="false"><b>Morning</b><span>Before your bathroom visit, then the result</span><em class="status" id="sw-morning"></em></button>
+      <button type="button" role="tab" data-part="morning" aria-selected="false"><b><i class="ico" data-icon="morning"></i>Morning</b><span>Before your bathroom visit, then the result</span><em class="status" id="sw-morning"></em></button>
+      <button type="button" role="tab" data-part="day" aria-selected="true"><b><i class="ico" data-icon="day"></i>Day log</b><span>After your bathroom visit, until bed</span><em class="status" id="sw-day"></em></button>
     </div>
 
     <div class="banner" id="reminder-banner" hidden>
@@ -412,6 +487,10 @@ div.half { cursor: default; border-style: dashed; background: transparent; }
     morning: ["Had coffee", "Exercised", "Went for a walk", "Bengal Spice", "Was rushed", "Stretched"]
   };
   const EMPTIED = ["", "No", "Partly", "Yes"];
+  const ICONS = {
+    morning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><path d="M12 2v7M4.2 10.2l1.4 1.4M1 18h2M21 18h2M18.4 11.6l1.4-1.4M23 22H1M8 6l4-4 4 4"/></svg>',
+    day: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>'
+  };
   const SCORE_WORD = ["", "Rough", "Off", "Okay", "Good", "Great"];
 
   // ---------- dates ----------
@@ -472,6 +551,7 @@ div.half { cursor: default; border-style: dashed; background: transparent; }
 
   // ---------- build controls ----------
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  $$("[data-icon]").forEach(i => i.innerHTML = ICONS[i.dataset.icon]);
   $("#quicklog").innerHTML = SYMPTOMS.map(([k, l]) => `<button type="button" data-log="${k}">${l}</button>`).join("");
   $(".bristol").innerHTML = BRISTOL.map((d, i) => `<button type="button" data-v="${i + 1}" title="${d}">${i + 1}</button>`).join("");
   $$("[data-tags]").forEach(box => {
@@ -543,6 +623,8 @@ div.half { cursor: default; border-style: dashed; background: transparent; }
 
   function setHeader() {
     if ($("#view-checkin").hidden || !S.day || !S.morning) return;
+    $("#hdr-icon").innerHTML = ICONS[part];
+    document.body.dataset.part = part;
     if (part === "day") {
       const d = S.day.date;
       $("#hdr-eyebrow").textContent = "Day log";
@@ -637,7 +719,8 @@ div.half { cursor: default; border-style: dashed; background: transparent; }
     $$("main").forEach(m => m.hidden = m.id !== "view-" + v);
     $$(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.view === v)));
     if (v === "checkin") setHeader();
-    else { $("#hdr-eyebrow").textContent = "Digestiv"; $("#hdr-title").textContent = { history: "History", patterns: "Patterns", settings: "Settings" }[v]; }
+    else {
+      document.body.dataset.part = ""; $("#hdr-icon").innerHTML = ""; $("#hdr-eyebrow").textContent = "Digestiv"; $("#hdr-title").textContent = { history: "History", patterns: "Patterns", settings: "Settings" }[v]; }
     if (v === "history") renderHistory();
     if (v === "patterns") renderPatterns();
     if (v === "settings") $("#clear-confirm").hidden = true;
@@ -656,17 +739,17 @@ div.half { cursor: default; border-style: dashed; background: transparent; }
     box.innerHTML = `<p class="hint" style="margin:0 0 6px">Each row is a day and the morning after it. Tap to edit.</p>` + keys.map(D => {
       const day = db.days[D], M = addDays(D, 1), m = db.mornings[M];
       const dayHalf = day
-        ? `<button class="half" type="button" data-open-day="${D}"><span class="head"><b>${fmtDay(D)}</b><em class="status" data-state="${day.status}">${statusOf(day)}</em></span>
+        ? `<button class="half day" type="button" data-open-day="${D}"><span class="head"><b class="label"><i class="ico">${ICONS.day}</i>${fmtDay(D)}</b><em class="status" data-state="${day.status}">${statusOf(day)}</em></span>
             <span class="tags">${symSummary(day)}${day.stress ? ` · stress ${day.stress}/5` : ""}</span>
             ${[...(day.tags.food || []), ...(day.tags.helpers || [])].length ? `<span class="tags">${[...(day.tags.food || []), ...(day.tags.helpers || [])].join(" · ")}</span>` : ""}</button>`
-        : `<button class="half" type="button" data-open-day="${D}"><span class="head"><b>${fmtDay(D)}</b></span><span class="tags">No day log. Tap to add one.</span></button>`;
+        : `<button class="half day" type="button" data-open-day="${D}"><span class="head"><b class="label"><i class="ico">${ICONS.day}</i>${fmtDay(D)}</b></span><span class="tags">No day log. Tap to add one.</span></button>`;
       const mornHalf = M > today()
-        ? `<div class="half"><b>${weekday(M)} morning</b><span class="tags">Tomorrow</span></div>`
+        ? `<div class="half morning"><b class="label"><i class="ico">${ICONS.morning}</i>${weekday(M)} morning</b><span class="tags">Tomorrow</span></div>`
         : m
-          ? `<button class="half" type="button" data-open-morning="${M}"><span class="head"><b>${weekday(M)} morning</b>${m.overall ? `<span class="pill sm" data-v="${m.overall}" style="background:var(--s${m.overall})">${m.overall}</span>` : `<em class="status" data-state="${m.status}">${statusOf(m)}</em>`}</span>
+          ? `<button class="half morning" type="button" data-open-morning="${M}"><span class="head"><b class="label"><i class="ico">${ICONS.morning}</i>${weekday(M)} morning</b>${m.overall ? `<span class="pill sm" data-v="${m.overall}" style="background:var(--s${m.overall})">${m.overall}</span>` : `<em class="status" data-state="${m.status}">${statusOf(m)}</em>`}</span>
               <span class="tags">${m.bm ? `${m.bm} BM${m.bm > 1 ? "s" : ""}${m.bristol ? ` · Bristol ${m.bristol}` : ""}${m.emptied ? ` · emptied: ${EMPTIED[m.emptied].toLowerCase()}` : ""}` : "No bowel movement"}</span>
               ${(m.tags.morning || []).length ? `<span class="tags">${m.tags.morning.join(" · ")}</span>` : ""}</button>`
-          : `<button class="half" type="button" data-open-morning="${M}"><span class="head"><b>${weekday(M)} morning</b></span><span class="tags">Not logged. Tap to add.</span></button>`;
+          : `<button class="half morning" type="button" data-open-morning="${M}"><span class="head"><b class="label"><i class="ico">${ICONS.morning}</i>${weekday(M)} morning</b></span><span class="tags">Not logged. Tap to add.</span></button>`;
       return `<div class="cycle">${dayHalf}${mornHalf}</div>`;
     }).join("");
   }

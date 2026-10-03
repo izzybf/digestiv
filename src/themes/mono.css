@@ -1,0 +1,36 @@
+/* Mono: quiet, flat, iOS-like. No borders; soft grey fills; black is the only accent. */
+:root {
+  --bg: #ffffff; --surface: #f3f3f1; --ink: #111111; --muted: #6e6e6a; --line: #e8e8e5;
+  --accent: #111111; --accent-ink: #ffffff; --accent-soft: #ececea;
+  --display: "Geist", "SF Pro Display", system-ui, sans-serif;
+  --body: "Geist", "SF Pro Text", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b0b0b; --surface: #1a1a1a; --ink: #f2f2f0; --muted: #9a9a96; --line: #262626;
+  --accent: #f2f2f0; --accent-ink: #0b0b0b; --accent-soft: #262626; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b0b0b; --surface: #1a1a1a; --ink: #f2f2f0; --muted: #9a9a96; --line: #262626;
+  --accent: #f2f2f0; --accent-ink: #0b0b0b; --accent-soft: #262626; color-scheme: dark; }
+h1 { font-size: 2.1rem; font-weight: 600; letter-spacing: -0.035em; }
+h2 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
+.eyebrow { letter-spacing: 0.02em; text-transform: none; font-size: 0.8rem; font-weight: 500; }
+section.block { border-top: 0; padding-block: 22px; }
+.seg button, .chip, .btn, .switch button, .half, .card, .stepper, input[type="date"], input[type="time"], textarea { border-color: transparent; background: var(--surface); }
+.seg { background: var(--surface); border-radius: 12px; padding: 3px; gap: 2px; }
+.seg button { background: transparent; border-radius: 9px; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.checks .chip[aria-pressed="true"] .box { background: var(--accent-ink); border-color: var(--accent-ink); }
+.checks .chip[aria-pressed="true"] .box::after { border-color: var(--accent); }
+.quicklog button { border: 0; background: var(--surface); color: var(--ink); font-weight: 600; }
+.quicklog button:active { background: var(--accent); color: var(--accent-ink); }
+.switch button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
+.switch button[aria-selected="true"] span { color: inherit; opacity: .7; }
+.banner { background: var(--surface); }
+.savebar { border-top: 0; }
+.btn { border-radius: 999px; padding: 12px 20px; }
+.chip { padding: 7px 14px; }
+nav.tabs { background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top-color: var(--line); }
+.tab[aria-selected="true"] { background: transparent; color: var(--ink); }
+.status[data-state="submitted"] { background: var(--ink); color: var(--bg); }
+.switch button[aria-selected="true"] .status[data-state="submitted"] { background: var(--accent-ink); color: var(--accent); }

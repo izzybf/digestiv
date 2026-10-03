@@ -74,9 +74,6 @@ section.block:first-of-type { border-top: 0; padding-top: 4px; }
 .seg.score button[aria-pressed="true"][data-v="5"] { background: var(--s5); border-color: var(--s5); color: #fff; }
 .seg.score button span { display: block; font-size: 0.7rem; opacity: 0.85; }
 
-.sym { display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr); gap: 8px 10px; align-items: center; }
-.sym .name { font-size: 0.92rem; }
-.sym .seg button { padding: 7px 2px; font-size: 0.78rem; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { border-radius: 999px; padding: 6px 12px; font-size: 0.86rem; }
@@ -114,13 +111,9 @@ nav.tabs {
 .tab { border: 0; background: transparent; padding: 8px 4px; border-radius: 10px; font-size: 0.85rem; color: var(--muted); font-weight: 600; }
 .tab[aria-selected="true"] { color: var(--accent); background: var(--accent-soft); }
 
-.day { display: grid; grid-template-columns: 3rem minmax(0, 1fr); gap: 12px; padding-block: 12px; border-top: 1px solid var(--line); cursor: pointer; background: none; border-left: 0; border-right: 0; border-bottom: 0; text-align: left; font: inherit; color: inherit; width: 100%; }
-.day:first-child { border-top: 0; }
 .pill { width: 3rem; height: 3rem; border-radius: 12px; display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 1.3rem; color: #fff; }
 .pill[data-v="3"] { color: #1d2a23; }
 .pill[data-v="0"] { background: var(--line); color: var(--muted); }
-.day .meta { min-width: 0; display: grid; gap: 3px; }
-.day .tags { font-size: 0.82rem; color: var(--muted); overflow-wrap: anywhere; }
 
 .chart { width: 100%; height: auto; display: block; }
 .factor { display: grid; grid-template-columns: minmax(0, 1fr) 7rem 3.2rem; gap: 10px; align-items: center; padding-block: 7px; border-top: 1px solid var(--line); font-size: 0.9rem; }
@@ -134,108 +127,137 @@ nav.tabs {
 .stack { display: grid; gap: 16px; }
 .example-tag { display: inline-block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; background: var(--s3); color: #1d2a23; border-radius: 6px; padding: 2px 7px; }
 .confirm { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-@media (prefers-reduced-motion: no-preference) { .btn, .chip, .seg button, .tab { transition: background-color .15s, border-color .15s; } }
+
+.switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-bottom: 16px; }
+.switch button { font: inherit; cursor: pointer; text-align: left; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 12px; padding: 10px 12px; display: grid; gap: 2px; min-width: 0; }
+.switch b { font-family: var(--display); font-size: 1rem; }
+.switch .status { justify-self: start; margin-top: 4px; }
+.switch span { font-size: 0.78rem; color: var(--muted); line-height: 1.3; }
+.switch button[aria-selected="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.formhead { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; padding-bottom: 6px; }
+.formhead .datebox { display: flex; align-items: center; gap: 8px; }
+.status { font-size: 0.75rem; font-weight: 600; border-radius: 999px; padding: 3px 10px; background: var(--line); color: var(--muted); white-space: nowrap; }
+.status:empty { display: none; }
+.status[data-state="draft"] { background: color-mix(in srgb, var(--s3) 35%, var(--surface)); color: var(--ink); }
+.status[data-state="submitted"] { background: var(--accent-soft); color: var(--accent); }
+.quicklog { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.quicklog button { font: inherit; cursor: pointer; border: 1.5px solid var(--accent); background: var(--surface); color: var(--accent); border-radius: 12px; padding: 12px 6px; font-weight: 700; }
+.quicklog button:active { background: var(--accent); color: var(--accent-ink); }
+.events { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.event { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding-block: 4px; border-top: 1px solid var(--line); }
+.event:first-child { border-top: 0; }
+.ev-main { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; min-width: 0; }
+.event input[type="time"] { padding: 5px 6px; font-size: 0.85rem; }
+.event .ev-name { font-weight: 600; font-size: 0.95rem; }
+.seg.ev-level { grid-auto-columns: auto; gap: 3px; }
+.seg.ev-level button { padding: 5px 7px; font-size: 0.75rem; }
+.ev-del { font: inherit; border: 0; background: transparent; color: var(--muted); font-size: 1.3rem; line-height: 1; cursor: pointer; width: 32px; height: 32px; border-radius: 8px; }
+.toast button { font: inherit; color: var(--accent); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 0; font-weight: 600; }
+.cycle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding-block: 10px; border-top: 1px solid var(--line); }
+.cycle:first-child { border-top: 0; }
+.half { font: inherit; color: inherit; text-align: left; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px; display: grid; gap: 4px; align-content: start; cursor: pointer; min-width: 0; }
+div.half { cursor: default; border-style: dashed; background: transparent; }
+.half .head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; justify-content: space-between; }
+.half .tags { font-size: 0.8rem; color: var(--muted); overflow-wrap: anywhere; }
+.pill.sm { width: 2rem; height: 2rem; font-size: 1rem; border-radius: 9px; flex: none; }
+@media (prefers-reduced-motion: no-preference) { .btn, .chip, .seg button, .tab, .switch button { transition: background-color .15s, border-color .15s; } }
 </style>
 
 <div class="wrap">
   <header class="top">
     <div>
       <div class="eyebrow" id="hdr-eyebrow">Daily check-in</div>
-      <h1 id="hdr-title">How's your gut?</h1>
-    </div>
-    <div class="datebox" id="datebox">
-      <label for="f-date" class="small muted">Day</label>
-      <input type="date" id="f-date">
+      <h1 id="hdr-title">Digestiv</h1>
     </div>
   </header>
 
   <!-- CHECK-IN -->
   <main id="view-checkin">
-    <div class="banner" id="reminder-banner" hidden>
-      <p>Get a daily nudge: add a repeating reminder to your calendar.</p>
-      <button class="btn quiet" type="button" data-goto="settings">Set reminder</button>
+    <div class="switch" role="tablist" aria-label="Which part">
+      <button type="button" role="tab" data-part="day" aria-selected="true"><b>Day log</b><span>After your bathroom visit, until bed</span><em class="status" id="sw-day"></em></button>
+      <button type="button" role="tab" data-part="morning" aria-selected="false"><b>Morning</b><span>Before your bathroom visit, then the result</span><em class="status" id="sw-morning"></em></button>
     </div>
 
-    <form id="form" autocomplete="off">
+    <div class="banner" id="reminder-banner" hidden>
+      <p>Get a daily nudge: add repeating reminders to your calendar.</p>
+      <button class="btn quiet" type="button" data-view="settings">Set reminders</button>
+    </div>
+
+    <!-- DAY LOG -->
+    <form id="form-day" data-part="day" autocomplete="off">
+      <div class="formhead">
+        <div class="datebox"><label for="d-date" class="small muted">Day</label><input type="date" id="d-date"></div>
+        <span class="status" id="d-status"></span>
+      </div>
+
       <section class="block">
-        <h2>Gut today</h2>
-        <div class="q">
-          <div class="label">Overall, how does your digestion feel?</div>
-          <div class="seg score" data-field="overall" role="group" aria-label="Overall">
-            <button type="button" data-v="1">1<span>Rough</span></button>
-            <button type="button" data-v="2">2<span>Off</span></button>
-            <button type="button" data-v="3">3<span>Okay</span></button>
-            <button type="button" data-v="4">4<span>Good</span></button>
-            <button type="button" data-v="5">5<span>Great</span></button>
-          </div>
-        </div>
-        <div class="q">
-          <div class="label">Symptoms</div>
-          <div class="sym" id="symptoms"></div>
-        </div>
-        <div class="row">
-          <div class="q">
-            <div class="label">Bowel movements</div>
-            <div class="stepper" data-field="bm" data-step="1" data-min="0" data-max="12">
-              <button type="button" data-d="-1" aria-label="Fewer">−</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button>
-            </div>
-          </div>
-          <div class="q">
-            <div class="label">Urgency</div>
-            <div class="chips"><button type="button" class="chip" data-toggle="urgency">Had to rush</button></div>
-          </div>
-        </div>
-        <div class="q" id="bristol-q">
-          <div class="label">Bristol stool type <span class="hint">(most typical today)</span></div>
-          <div class="bristol seg" data-field="bristol" role="group" aria-label="Bristol type"></div>
-          <div class="bristol-desc" id="bristol-desc">1 is hard lumps, 4 is smooth and soft, 7 is watery.</div>
-        </div>
-        <div class="q" id="emptied-q">
-          <div class="label">Felt fully emptied afterwards?</div>
-          <div class="seg" data-field="emptied" role="group" aria-label="Felt fully emptied">
-            <button type="button" data-v="3">Yes</button><button type="button" data-v="2">Partly</button><button type="button" data-v="1">No</button>
-          </div>
-        </div>
+        <h2>Symptoms as they happen</h2>
+        <p class="hint" style="margin:0">Tap one the moment you notice it. You can change the time or strength after.</p>
+        <div class="quicklog" id="quicklog"></div>
+        <ol class="events" id="events" aria-label="Symptoms logged"></ol>
       </section>
 
       <section class="block">
-        <h2>Yesterday</h2>
+        <h2>Food and drink</h2>
         <div class="q">
-          <label for="f-food">What did you eat and drink?</label>
-          <textarea id="f-food" placeholder="Breakfast: oats with banana. Lunch: chicken wrap. Dinner: pasta with garlic, 2 glasses of wine…"></textarea>
+          <label for="d-food">What have you eaten and drunk?</label>
+          <textarea id="d-food" data-text="food" placeholder="Breakfast: oats with banana. Lunch: chicken wrap. Dinner: pasta with garlic…"></textarea>
         </div>
         <div class="q">
           <div class="label">Anything in here? <span class="hint">Tap all that apply</span></div>
           <div class="chips" data-tags="food"></div>
         </div>
         <div class="q">
-          <div class="label">Gut helpers <span class="hint">Had any yesterday?</span></div>
+          <div class="label">Gut helpers</div>
           <div class="checks" data-tags="helpers"></div>
         </div>
-        <div class="row">
-          <div class="q">
-            <div class="label">Glasses of water</div>
-            <div class="stepper" data-field="water" data-step="1" data-min="0" data-max="20">
-              <button type="button" data-d="-1" aria-label="Fewer">−</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button>
-            </div>
-          </div>
-        </div>
         <div class="q">
-          <div class="label">Stress level yesterday</div>
-          <div class="seg" data-field="stressY" role="group" aria-label="Stress yesterday">
-            <button type="button" data-v="1">Calm</button><button type="button" data-v="2">Low</button><button type="button" data-v="3">Some</button><button type="button" data-v="4">High</button><button type="button" data-v="5">Very high</button>
+          <div class="label">Glasses of water</div>
+          <div class="stepper" data-field="water" data-step="1" data-min="0" data-max="20">
+            <button type="button" data-d="-1" aria-label="Fewer">−</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button>
           </div>
         </div>
       </section>
 
       <section class="block">
-        <h2>Last night and this morning</h2>
-        <div class="row">
-          <div class="q">
-            <div class="label">Hours of sleep</div>
-            <div class="stepper" data-field="sleepH" data-step="0.5" data-min="0" data-max="14">
-              <button type="button" data-d="-1" aria-label="Less">−</button><output>7</output><button type="button" data-d="1" aria-label="More">+</button>
-            </div>
+        <h2>How the day went</h2>
+        <div class="q">
+          <div class="label">Stress level</div>
+          <div class="seg" data-field="stress" role="group" aria-label="Stress level">
+            <button type="button" data-v="1">Calm</button><button type="button" data-v="2">Low</button><button type="button" data-v="3">Some</button><button type="button" data-v="4">High</button><button type="button" data-v="5">Very high</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="label">Anything else</div>
+          <div class="chips" data-tags="other"></div>
+        </div>
+        <div class="q">
+          <label for="d-notes">Notes</label>
+          <textarea id="d-notes" data-text="notes" placeholder="Felt bloated after lunch, better after a walk…"></textarea>
+        </div>
+      </section>
+
+      <div class="savebar">
+        <button class="btn" type="button" data-save="day">Save for later</button>
+        <button class="btn primary" type="submit" id="d-submit">Submit day</button>
+        <span class="toast" id="d-toast" role="status"></span>
+      </div>
+    </form>
+
+    <!-- MORNING -->
+    <form id="form-morning" data-part="morning" autocomplete="off" hidden>
+      <div class="formhead">
+        <div class="datebox"><label for="m-date" class="small muted">Morning of</label><input type="date" id="m-date"></div>
+        <span class="status" id="m-status"></span>
+      </div>
+      <p class="hint" id="m-pair" style="margin:0"></p>
+
+      <section class="block">
+        <h2>Before your bathroom visit</h2>
+        <div class="q">
+          <div class="label">Hours of sleep</div>
+          <div class="stepper" data-field="sleepH" data-step="0.5" data-min="0" data-max="14">
+            <button type="button" data-d="-1" aria-label="Less">−</button><output>7</output><button type="button" data-d="1" aria-label="More">+</button>
           </div>
         </div>
         <div class="q">
@@ -257,17 +279,59 @@ nav.tabs {
       </section>
 
       <section class="block">
-        <h2>Anything else</h2>
-        <div class="chips" data-tags="other"></div>
+        <h2>The result</h2>
         <div class="q">
-          <label for="f-notes">Notes</label>
-          <textarea id="f-notes" placeholder="Felt bloated after lunch, better after a walk…"></textarea>
+          <label for="m-attempt">Bathroom visit at</label>
+          <div class="row" style="gap:8px">
+            <input type="time" id="m-attempt" data-text="attemptAt">
+            <button class="btn quiet" type="button" data-now="1">Now</button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="q">
+            <div class="label">Bowel movements</div>
+            <div class="stepper" data-field="bm" data-step="1" data-min="0" data-max="12">
+              <button type="button" data-d="-1" aria-label="Fewer">−</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button>
+            </div>
+          </div>
+          <div class="q">
+            <div class="label">Urgency</div>
+            <div class="chips"><button type="button" class="chip" data-toggle="urgency">Had to rush</button></div>
+          </div>
+        </div>
+        <div id="m-bm-detail" class="stack" style="gap:14px">
+          <div class="q">
+            <div class="label">Bristol stool type <span class="hint">(most typical)</span></div>
+            <div class="bristol seg" data-field="bristol" role="group" aria-label="Bristol type"></div>
+            <div class="bristol-desc" id="bristol-desc"></div>
+          </div>
+          <div class="q">
+            <div class="label">Felt fully emptied afterwards?</div>
+            <div class="seg" data-field="emptied" role="group" aria-label="Felt fully emptied">
+              <button type="button" data-v="3">Yes</button><button type="button" data-v="2">Partly</button><button type="button" data-v="1">No</button>
+            </div>
+          </div>
+        </div>
+        <div class="q">
+          <div class="label">How does your gut feel now?</div>
+          <div class="seg score" data-field="overall" role="group" aria-label="Overall">
+            <button type="button" data-v="1">1<span>Rough</span></button>
+            <button type="button" data-v="2">2<span>Off</span></button>
+            <button type="button" data-v="3">3<span>Okay</span></button>
+            <button type="button" data-v="4">4<span>Good</span></button>
+            <button type="button" data-v="5">5<span>Great</span></button>
+          </div>
+        </div>
+        <div class="q">
+          <label for="m-notes">Notes</label>
+          <textarea id="m-notes" data-text="notes" placeholder="Took a while, needed a second try…"></textarea>
         </div>
       </section>
 
       <div class="savebar">
-        <button class="btn primary" type="submit" id="save-btn">Save check-in</button>
-        <span class="toast" id="toast" role="status"></span>
+        <button class="btn" type="button" data-save="morning">Save for later</button>
+        <button class="btn primary" type="submit" id="m-submit">Submit morning</button>
+        <span class="toast" id="m-toast" role="status"></span>
       </div>
     </form>
   </main>
@@ -286,17 +350,20 @@ nav.tabs {
   <main id="view-settings" hidden>
     <div class="stack">
       <div class="card">
-        <h2>Daily reminder</h2>
-        <p class="muted small" style="margin:0">Adds a repeating event with an alert to your phone's calendar, so you get a nudge every day even when the app is closed.</p>
+        <h2>Daily reminders</h2>
+        <p class="muted small" style="margin:0">Each adds a repeating event with an alert to your phone's calendar, so you get a nudge even when the app is closed.</p>
         <div class="row">
-          <label for="f-remind" class="small">Remind me at</label>
+          <label for="f-remind" class="small">Morning check-in at</label>
           <input type="time" id="f-remind" value="08:30">
+          <button class="btn primary" type="button" id="ics-morning">Add to calendar</button>
         </div>
         <div class="row">
-          <button class="btn primary" type="button" id="ics-btn">Add to calendar</button>
+          <label for="f-remind-eve" class="small">Submit day log at</label>
+          <input type="time" id="f-remind-eve" value="21:30">
+          <button class="btn" type="button" id="ics-evening">Add to calendar</button>
         </div>
-        <p class="muted small" id="frame-note" hidden style="margin:0">Downloads are blocked in this preview. Use the installed app to add the reminder.</p>
-        <p class="muted small" style="margin:0">If you've installed Digestiv to your home screen, its icon also shows a badge until you've checked in for the day.</p>
+        <p class="muted small" id="frame-note" hidden style="margin:0">Downloads are blocked in this preview. Use the installed app to add reminders.</p>
+        <p class="muted small" style="margin:0">If you've installed Digestiv to your home screen, its icon also shows a badge until you've submitted the morning check-in.</p>
       </div>
       <div class="card">
         <h2>Your data</h2>
@@ -310,7 +377,7 @@ nav.tabs {
         <span class="toast small" id="data-msg" role="status"></span>
         <div class="confirm">
           <button class="btn danger" type="button" id="clear-btn">Delete all check-ins</button>
-          <span id="clear-confirm" hidden class="confirm"><span class="small">Delete <b id="clear-count">0</b> check-ins for good?</span>
+          <span id="clear-confirm" hidden class="confirm"><span class="small">Delete <b id="clear-count">0</b> logs for good?</span>
             <button class="btn danger" type="button" id="clear-yes">Delete</button>
             <button class="btn quiet" type="button" id="clear-no">Keep</button></span>
         </div>
@@ -328,189 +395,325 @@ nav.tabs {
 
 <script>
 (() => {
-  const KEY = "digestiv.entries.v1";
-  const SYMPTOMS = [["bloating", "Bloating"], ["pain", "Cramping or pain"], ["gas", "Gas"], ["reflux", "Reflux"], ["nausea", "Nausea"]];
-  const LEVELS = ["None", "Mild", "Mod.", "Strong"];
+  // Storage: v2 keeps day logs and mornings separately. A day log for date D pairs with the morning of D+1.
+  const KEY1 = "digestiv.entries.v1", KEY2 = "digestiv.v2";
+  const SYMPTOMS = [["gas", "Gas"], ["bloating", "Bloating"], ["cramping", "Cramping"], ["reflux", "Reflux"], ["nausea", "Nausea"], ["urgency", "Urgency"]];
+  const SYM_LABEL = Object.fromEntries(SYMPTOMS);
+  const LEVELS = ["", "Mild", "Mod.", "Strong"];
+  const LEVEL_WORD = ["", "mild", "moderate", "strong"];
   const BRISTOL = [
     "Separate hard lumps (constipated)", "Lumpy and sausage-shaped (constipated)", "Sausage with cracks (normal)",
     "Smooth, soft sausage (ideal)", "Soft blobs with clear edges (lacking fibre)", "Mushy with ragged edges (mild diarrhoea)", "Watery, no solid pieces (diarrhoea)"
   ];
   const TAGS = {
     food: ["Dairy", "Gluten / wheat", "Beans & lentils", "Onion / garlic", "Spicy", "Fried / greasy", "Red meat", "Raw veg / salad", "Lots of fruit", "Sweets / sugar", "Artificial sweetener", "Coffee", "Alcohol", "Fizzy drinks", "Ate late (after 9pm)", "Big portions", "Skipped a meal", "Ate out / takeaway"],
-    morning: ["Had coffee", "Exercised", "Went for a walk", "Bengal Spice", "Was rushed", "Stretched"],
-    helpers: ["Kiwi", "Prunes", "Sunflower seeds", "Psyllium husk"],
-    other: ["On my period", "Feeling unwell", "Travelling", "Antibiotics"]
+    helpers: ["Kiwi", "Prunes", "Sunflower seeds", "Psyllium husk", "Magnesium citrate"],
+    other: ["On my period", "Feeling unwell", "Travelling", "Antibiotics"],
+    morning: ["Had coffee", "Exercised", "Went for a walk", "Bengal Spice", "Was rushed", "Stretched"]
   };
   const EMPTIED = ["", "No", "Partly", "Yes"];
   const SCORE_WORD = ["", "Rough", "Off", "Okay", "Good", "Great"];
-
-  // ---------- storage ----------
-  let entries = {};
-  function load() { try { entries = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch { entries = {}; } }
-  function persist() { try { localStorage.setItem(KEY, JSON.stringify(entries)); return true; } catch { return false; } }
-  load();
-  try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
 
   // ---------- dates ----------
   const iso = d => { const z = new Date(d.getTime() - d.getTimezoneOffset() * 60000); return z.toISOString().slice(0, 10); };
   const today = () => iso(new Date());
   const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+  const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
   const fmtDay = s => parse(s).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+  const weekday = s => parse(s).toLocaleDateString(undefined, { weekday: "short" });
+  const hm = d => String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+  const clone = o => JSON.parse(JSON.stringify(o));
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  // ---------- storage ----------
+  let db = { days: {}, mornings: {} };
+  function migrateV1(entries) {
+    // v1 stored one entry per morning: the result plus what was eaten the day before.
+    const out = { days: {}, mornings: {} };
+    Object.values(entries || {}).forEach(e => {
+      if (!e || !/^\d{4}-\d{2}-\d{2}$/.test(e.date || "")) return;
+      const t = e.tags || {};
+      out.mornings[e.date] = {
+        date: e.date, sleepH: e.sleepH ?? 7, sleepQ: e.sleepQ ?? null, stressM: e.stressM ?? null, tags: { morning: t.morning || [] },
+        attemptAt: "", bm: e.bm ?? 0, bristol: e.bristol ?? null, emptied: e.emptied ?? null, urgency: !!e.urgency, overall: e.overall ?? null,
+        notes: e.notes || "", legacy: { bloating: e.bloating ?? 0, pain: e.pain ?? 0, gas: e.gas ?? 0, reflux: e.reflux ?? 0, nausea: e.nausea ?? 0 },
+        status: "submitted", savedAt: e.savedAt || null
+      };
+      const prev = addDays(e.date, -1);
+      const hasDay = e.food || (t.food || []).length || (t.helpers || []).length || (t.other || []).length || e.stressY;
+      if (hasDay && !out.days[prev]) out.days[prev] = {
+        date: prev, food: e.food || "", tags: { food: t.food || [], helpers: t.helpers || [], other: t.other || [] },
+        water: e.water ?? 6, stress: e.stressY ?? null, events: [], notes: "", status: "submitted", savedAt: e.savedAt || null
+      };
+    });
+    return out;
+  }
+  function load() {
+    try {
+      const v2 = JSON.parse(localStorage.getItem(KEY2) || "null");
+      if (v2 && v2.days) { db = { days: v2.days || {}, mornings: v2.mornings || {} }; return; }
+    } catch {}
+    try {
+      const v1 = JSON.parse(localStorage.getItem(KEY1) || "null");
+      if (v1 && Object.keys(v1).length) { db = migrateV1(v1); persist(); }  // v1 is left in place as a backup
+    } catch {}
+  }
+  function persist() { try { localStorage.setItem(KEY2, JSON.stringify({ version: 2, days: db.days, mornings: db.mornings })); return true; } catch { return false; } }
+  load();
+  try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
+
+  const blankDay = d => ({ date: d, food: "", tags: { food: [], helpers: [], other: [] }, water: 6, stress: null, events: [], notes: "", status: null });
+  function blankMorning(d) {
+    const last = Object.values(db.mornings).filter(m => m.date < d).sort((a, b) => b.date.localeCompare(a.date))[0];
+    return { date: d, sleepH: last ? last.sleepH : 7, sleepQ: null, stressM: null, tags: { morning: [] }, attemptAt: "", bm: 1, bristol: null, emptied: null, urgency: false, overall: null, notes: "", status: null };
+  }
+  const normDay = r => Object.assign(blankDay(r.date), r, { tags: Object.assign({ food: [], helpers: [], other: [] }, r.tags || {}), events: r.events || [] });
+  const normMorning = r => Object.assign(blankMorning(r.date), r, { tags: Object.assign({ morning: [] }, r.tags || {}) });
 
   // ---------- build controls ----------
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
-  const sym = $("#symptoms");
-  SYMPTOMS.forEach(([k, label]) => {
-    sym.insertAdjacentHTML("beforeend", `<div class="name">${label}</div><div class="seg" data-field="${k}" role="group" aria-label="${label}">${LEVELS.map((l, i) => `<button type="button" data-v="${i}">${l}</button>`).join("")}</div>`);
-  });
-  const bq = $(".bristol");
-  BRISTOL.forEach((_, i) => bq.insertAdjacentHTML("beforeend", `<button type="button" data-v="${i + 1}" title="${BRISTOL[i]}">${i + 1}</button>`));
+  $("#quicklog").innerHTML = SYMPTOMS.map(([k, l]) => `<button type="button" data-log="${k}">${l}</button>`).join("");
+  $(".bristol").innerHTML = BRISTOL.map((d, i) => `<button type="button" data-v="${i + 1}" title="${d}">${i + 1}</button>`).join("");
   $$("[data-tags]").forEach(box => {
-    const g = box.dataset.tags;
-    box.innerHTML = TAGS[g].map(t => `<button type="button" class="chip" data-tag="${t}" aria-pressed="false"><span class="box" aria-hidden="true"></span>${t}</button>`).join("");
+    box.innerHTML = TAGS[box.dataset.tags].map(t => `<button type="button" class="chip" data-tag="${t}" aria-pressed="false"><span class="box" aria-hidden="true"></span>${t}</button>`).join("");
   });
 
   // ---------- form state ----------
-  let state = blank();
-  function blank() {
-    const prevSleep = Object.values(entries).sort((a, b) => b.date.localeCompare(a.date))[0];
-    return { overall: null, bloating: 0, pain: 0, gas: 0, reflux: 0, nausea: 0, bm: 1, bristol: null, emptied: null, urgency: false,
-      food: "", tags: { food: [], helpers: [], morning: [], other: [] }, water: 6, stressY: null, sleepH: prevSleep ? prevSleep.sleepH : 7, sleepQ: null, stressM: null, notes: "" };
-  }
-  function render() {
-    $$(".seg[data-field]").forEach(seg => {
-      const v = state[seg.dataset.field];
-      seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(v !== null && String(v) === b.dataset.v)));
+  const S = { day: null, morning: null };
+  let part = "day";
+  const form = p => $("#form-" + p);
+  const store = p => p === "day" ? db.days : db.mornings;
+  const short = p => p === "day" ? "d" : "m";
+
+  function render(p) {
+    const f = form(p), st = S[p];
+    f.querySelectorAll(".seg[data-field]").forEach(seg => {
+      const v = st[seg.dataset.field];
+      seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(v !== null && v !== undefined && String(v) === b.dataset.v)));
     });
-    $$(".stepper").forEach(st => st.querySelector("output").textContent = state[st.dataset.field]);
-    $$("[data-tags]").forEach(box => box.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String(state.tags[box.dataset.tags].includes(c.dataset.tag)))));
-    $('[data-toggle="urgency"]').setAttribute("aria-pressed", String(!!state.urgency));
-    $("#f-food").value = state.food || "";
-    $("#f-notes").value = state.notes || "";
-    $("#bristol-q").hidden = $("#emptied-q").hidden = state.bm === 0;
-    $("#bristol-desc").textContent = state.bristol ? `Type ${state.bristol}: ${BRISTOL[state.bristol - 1]}` : "1 is hard lumps, 4 is smooth and soft, 7 is watery.";
+    f.querySelectorAll(".stepper").forEach(x => x.querySelector("output").textContent = st[x.dataset.field]);
+    f.querySelectorAll("[data-tags]").forEach(box => box.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String((st.tags[box.dataset.tags] || []).includes(c.dataset.tag)))));
+    f.querySelectorAll("[data-toggle]").forEach(b => b.setAttribute("aria-pressed", String(!!st[b.dataset.toggle])));
+    f.querySelectorAll("[data-text]").forEach(t => { if (document.activeElement !== t) t.value = st[t.dataset.text] || ""; });
+    if (p === "day") renderEvents();
+    else {
+      $("#m-bm-detail").hidden = st.bm === 0;
+      $("#bristol-desc").textContent = st.bristol ? `Type ${st.bristol}: ${BRISTOL[st.bristol - 1]}` : "1 is hard lumps, 4 is smooth and soft, 7 is watery.";
+    }
+    renderStatus(p);
   }
-  function openDay(d) {
-    $("#f-date").value = d;
-    state = entries[d] ? JSON.parse(JSON.stringify(entries[d])) : blank();
-    state.tags = Object.assign({ food: [], helpers: [], morning: [], other: [] }, state.tags || {});
-    $("#save-btn").textContent = entries[d] ? "Update check-in" : "Save check-in";
-    $("#toast").textContent = "";
-    setHeader();
-    render();
+  function statusOf(rec) { return !rec ? "" : rec.status === "submitted" ? "Submitted" : "Draft"; }
+  function renderStatus(p) {
+    const rec = store(p)[S[p].date], el = $(`#${short(p)}-status`);
+    el.textContent = !rec ? "" : rec.status === "submitted" ? "Submitted" : `Draft · saved ${rec.savedAt ? hm(new Date(rec.savedAt)) : ""}`;
+    el.dataset.state = rec ? rec.status : "";
+    $(`#${short(p)}-submit`).textContent = rec && rec.status === "submitted" ? "Update" : (p === "day" ? "Submit day" : "Submit morning");
+    // the switch shows today's state for each part
+    [["day", db.days[today()]], ["morning", db.mornings[today()]]].forEach(([k, r]) => { const s = $("#sw-" + k); s.textContent = statusOf(r); s.dataset.state = r ? r.status : ""; });
   }
+  function renderEvents() {
+    const ev = [...S.day.events].sort((a, b) => a.t.localeCompare(b.t));
+    $("#events").innerHTML = ev.length ? ev.map(x => `<li class="event">
+        <span class="ev-main"><span class="ev-name">${SYM_LABEL[x.type]}</span>
+        <input type="time" value="${x.t}" data-ev-time="${x.id}" aria-label="Time of ${SYM_LABEL[x.type]}"></span>
+        <span class="seg ev-level" role="group" aria-label="Strength">${[1, 2, 3].map(l => `<button type="button" data-ev-level="${x.id}" data-l="${l}" aria-pressed="${x.level === l}">${LEVELS[l]}</button>`).join("")}</span>
+        <button type="button" class="ev-del" data-ev-del="${x.id}" aria-label="Remove ${SYM_LABEL[x.type]} at ${x.t}">×</button></li>`).join("")
+      : `<li class="muted small">Nothing logged yet.</li>`;
+  }
+
+  // Save keeps a submitted record submitted; new records start as drafts.
+  function save(p, status) {
+    const st = S[p], rec = store(p)[st.date];
+    if (p === "morning" && st.bm === 0) st.bristol = st.emptied = null;
+    st.status = status || (rec && rec.status) || "draft";
+    st.savedAt = new Date().toISOString();
+    if (status === "submitted") st.submittedAt = st.savedAt;
+    store(p)[st.date] = clone(st);
+    const ok = persist();
+    renderStatus(p); updateBadge();
+    return ok;
+  }
+  let timer = null, pending = null;
+  function autosave(p) { clearTimeout(timer); pending = p; timer = setTimeout(flush, 400); }
+  function flush() { clearTimeout(timer); if (pending) { const p = pending; pending = null; save(p); } }
+  const failMsg = "Couldn't save: this browser is blocking storage.";
+
+  function openDay(d) { flush(); $("#d-date").value = d; S.day = db.days[d] ? normDay(clone(db.days[d])) : blankDay(d); $("#d-toast").textContent = ""; render("day"); setHeader(); }
+  function openMorning(d) { flush(); $("#m-date").value = d; S.morning = db.mornings[d] ? normMorning(clone(db.mornings[d])) : blankMorning(d); $("#m-toast").textContent = ""; render("morning"); setHeader(); }
+
   function setHeader() {
-    const d = $("#f-date").value || today(), isToday = d === today();
-    $("#hdr-title").textContent = isToday ? "How's your gut?" : fmtDay(d);
-    $("#hdr-eyebrow").textContent = isToday ? (entries[d] ? "Checked in today" : "Daily check-in") : (entries[d] ? "Editing check-in" : "Adding a past day");
+    if ($("#view-checkin").hidden || !S.day || !S.morning) return;
+    if (part === "day") {
+      const d = S.day.date;
+      $("#hdr-eyebrow").textContent = "Day log";
+      $("#hdr-title").textContent = d === today() ? "Today so far" : fmtDay(d);
+    } else {
+      const d = S.morning.date;
+      $("#hdr-eyebrow").textContent = "Morning check-in";
+      $("#hdr-title").textContent = d === today() ? "This morning" : `${fmtDay(d)}, morning`;
+      const prev = addDays(d, -1);
+      $("#m-pair").textContent = `This goes with your day log from ${fmtDay(prev)}${db.days[prev] ? "" : " (not logged)"}.`;
+    }
+  }
+  function showPart(p) {
+    flush();
+    part = p;
+    $("#form-day").hidden = p !== "day"; $("#form-morning").hidden = p !== "morning";
+    $$(".switch button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.part === p)));
+    setHeader();
   }
 
   document.addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
-    const seg = b.closest(".seg[data-field]");
-    if (seg && b.dataset.v !== undefined) {
-      const f = seg.dataset.field, v = Number(b.dataset.v);
-      const isSym = SYMPTOMS.some(s => s[0] === f);
-      state[f] = (state[f] === v && !isSym) ? null : v;
-      return render();
+    if (b.dataset.log) {
+      const t = hm(new Date());
+      S.day.events.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), t, type: b.dataset.log, level: 1 });
+      flush(); render("day");
+      $("#d-toast").textContent = save("day") ? `Logged ${SYM_LABEL[b.dataset.log].toLowerCase()} at ${t}.` : failMsg;
+      return;
     }
-    const st = b.closest(".stepper");
-    if (st && b.dataset.d) {
-      const f = st.dataset.field, step = Number(st.dataset.step);
-      state[f] = Math.min(Number(st.dataset.max), Math.max(Number(st.dataset.min), Math.round((Number(state[f]) + step * Number(b.dataset.d)) * 2) / 2));
-      return render();
+    if (b.dataset.evLevel) { const x = S.day.events.find(x => x.id === b.dataset.evLevel); if (x) { x.level = Number(b.dataset.l); render("day"); autosave("day"); } return; }
+    if (b.dataset.evDel) { S.day.events = S.day.events.filter(x => x.id !== b.dataset.evDel); render("day"); autosave("day"); return; }
+    const f = b.closest("form[data-part]"), p = f && f.dataset.part;
+    if (p) {
+      const st = S[p];
+      const seg = b.closest(".seg[data-field]");
+      if (seg && b.dataset.v !== undefined) { const k = seg.dataset.field, v = Number(b.dataset.v); st[k] = st[k] === v ? null : v; render(p); return autosave(p); }
+      const sp = b.closest(".stepper");
+      if (sp && b.dataset.d) {
+        const k = sp.dataset.field, step = Number(sp.dataset.step);
+        st[k] = Math.min(Number(sp.dataset.max), Math.max(Number(sp.dataset.min), Math.round((Number(st[k]) + step * Number(b.dataset.d)) * 2) / 2));
+        render(p); return autosave(p);
+      }
+      if (b.dataset.tag) {
+        const g = b.closest("[data-tags]").dataset.tags, arr = st.tags[g] = st.tags[g] || [], i = arr.indexOf(b.dataset.tag);
+        i >= 0 ? arr.splice(i, 1) : arr.push(b.dataset.tag);
+        render(p); return autosave(p);
+      }
+      if (b.dataset.toggle) { st[b.dataset.toggle] = !st[b.dataset.toggle]; render(p); return autosave(p); }
+      if (b.dataset.now) { st.attemptAt = hm(new Date()); render(p); return autosave(p); }
+      if (b.dataset.save) {
+        flush();
+        $(`#${short(p)}-toast`).textContent = save(p) ? "Saved. Come back any time to add more." : failMsg;
+        return;
+      }
     }
-    if (b.dataset.tag) {
-      const g = b.closest("[data-tags]").dataset.tags, arr = state.tags[g], i = arr.indexOf(b.dataset.tag);
-      i >= 0 ? arr.splice(i, 1) : arr.push(b.dataset.tag);
-      return render();
-    }
-    if (b.dataset.toggle === "urgency") { state.urgency = !state.urgency; return render(); }
-    if (b.dataset.goto) return show(b.dataset.goto);
+    if (b.dataset.part) return showPart(b.dataset.part);
     if (b.dataset.view) return show(b.dataset.view);
-    if (b.dataset.open) { openDay(b.dataset.open); return show("checkin"); }
+    if (b.dataset.openDay) { openDay(b.dataset.openDay); show("checkin"); return showPart("day"); }
+    if (b.dataset.openMorning) { openMorning(b.dataset.openMorning); show("checkin"); return showPart("morning"); }
   });
-  $("#f-food").addEventListener("input", e => state.food = e.target.value);
-  $("#f-notes").addEventListener("input", e => state.notes = e.target.value);
-  $("#f-date").addEventListener("change", e => { if (e.target.value) openDay(e.target.value > today() ? today() : e.target.value); });
+  document.addEventListener("input", e => {
+    const t = e.target, f = t.closest("form[data-part]");
+    if (f && t.dataset.text) { S[f.dataset.part][t.dataset.text] = t.value; autosave(f.dataset.part); }
+  });
+  $("#events").addEventListener("change", e => {
+    const id = e.target.dataset.evTime; if (!id || !e.target.value) return;
+    const x = S.day.events.find(x => x.id === id); if (x) { x.t = e.target.value; save("day"); render("day"); }
+  });
+  const clampDate = v => v > today() ? today() : v;
+  $("#d-date").addEventListener("change", e => { if (e.target.value) openDay(clampDate(e.target.value)); });
+  $("#m-date").addEventListener("change", e => { if (e.target.value) openMorning(clampDate(e.target.value)); });
 
-  $("#form").addEventListener("submit", e => {
-    e.preventDefault();
-    const d = $("#f-date").value || today();
-    if (state.overall === null) { $("#toast").textContent = "Pick an overall score (1 to 5) first."; $('[data-field="overall"] button').focus(); return; }
-    if (state.bm === 0) state.bristol = state.emptied = null;
-    entries[d] = Object.assign({}, state, { date: d, savedAt: new Date().toISOString() });
-    $("#toast").textContent = persist() ? (d === today() ? "Saved. See you tomorrow." : `Saved ${fmtDay(d)}.`) : "Couldn't save: this browser is blocking storage.";
-    $("#save-btn").textContent = "Update check-in";
-    setHeader();
-    updateBadge();
+  $("#form-day").addEventListener("submit", e => {
+    e.preventDefault(); flush();
+    const d = S.day.date;
+    if (!save("day", "submitted")) { $("#d-toast").textContent = failMsg; return; }
+    $("#d-toast").textContent = d === today() ? "Day submitted. Tomorrow morning, log how it went." : `Submitted ${fmtDay(d)}.`;
+  });
+  $("#form-morning").addEventListener("submit", e => {
+    e.preventDefault(); flush();
+    if (S.morning.overall === null || S.morning.overall === undefined) {
+      $("#m-toast").textContent = "Pick how your gut feels now (1 to 5) first.";
+      $('[data-field="overall"] button').focus(); return;
+    }
+    if (!save("morning", "submitted")) { $("#m-toast").textContent = failMsg; return; }
+    $("#m-toast").innerHTML = S.morning.date === today() ? `Morning submitted. <button type="button" data-part="day">Start today's day log</button>` : `Submitted ${esc(fmtDay(S.morning.date))}.`;
   });
 
   // ---------- views ----------
   function show(v) {
+    flush();
     $$("main").forEach(m => m.hidden = m.id !== "view-" + v);
     $$(".tab").forEach(t => t.setAttribute("aria-selected", String(t.dataset.view === v)));
-    $("#datebox").hidden = v !== "checkin";
-    if (v !== "checkin") {
-      $("#hdr-eyebrow").textContent = "Digestiv";
-      $("#hdr-title").textContent = { history: "History", patterns: "Patterns", settings: "Settings" }[v];
-    } else setHeader();
+    if (v === "checkin") setHeader();
+    else { $("#hdr-eyebrow").textContent = "Digestiv"; $("#hdr-title").textContent = { history: "History", patterns: "Patterns", settings: "Settings" }[v]; }
     if (v === "history") renderHistory();
     if (v === "patterns") renderPatterns();
     if (v === "settings") $("#clear-confirm").hidden = true;
     window.scrollTo(0, 0);
   }
 
-  function list() { return Object.values(entries).sort((a, b) => b.date.localeCompare(a.date)); }
-
+  function symSummary(day) {
+    const c = {}; (day.events || []).forEach(x => c[x.type] = (c[x.type] || 0) + 1);
+    const s = Object.entries(c).map(([k, n]) => `${SYM_LABEL[k].toLowerCase()} ×${n}`);
+    return s.length ? s.join(", ") : "No symptoms logged";
+  }
   function renderHistory() {
-    const L = list(), box = $("#history-list");
-    if (!L.length) { box.innerHTML = `<div class="card"><h2>No check-ins yet</h2><p class="muted" style="margin:0">Your days will show up here after your first check-in. Tap any day to edit it.</p><div><button class="btn primary" type="button" data-view="checkin">Check in now</button></div></div>`; return; }
-    box.innerHTML = L.map(e => {
-      const syms = SYMPTOMS.filter(([k]) => e[k] > 0).map(([k, l]) => `${l.split(" ")[0].toLowerCase()} ${LEVELS[e[k]].toLowerCase()}`);
-      const tags = [...(e.tags.food || []), ...(e.tags.helpers || []), ...(e.tags.morning || [])];
-      return `<button class="day" type="button" data-open="${e.date}">
-        <span class="pill" data-v="${e.overall}" style="background:var(--s${e.overall})">${e.overall}</span>
-        <span class="meta"><b>${fmtDay(e.date)} · ${SCORE_WORD[e.overall]}</b>
-        <span class="tags">${syms.length ? syms.join(", ") : "No symptoms"}${e.bristol ? ` · Bristol ${e.bristol}` : ""}${e.emptied ? ` · emptied: ${EMPTIED[e.emptied].toLowerCase()}` : ""}${e.stressY ? ` · stress ${e.stressY}/5` : ""}</span>
-        ${tags.length ? `<span class="tags">${tags.join(" · ")}</span>` : ""}</span></button>`;
+    const keys = [...new Set([...Object.keys(db.days), ...Object.keys(db.mornings).map(m => addDays(m, -1))])].sort().reverse();
+    const box = $("#history-list");
+    if (!keys.length) { box.innerHTML = `<div class="card"><h2>Nothing logged yet</h2><p class="muted" style="margin:0">Each row pairs a day log with the morning after it. Tap either half to edit it.</p><div><button class="btn primary" type="button" data-view="checkin">Check in now</button></div></div>`; return; }
+    box.innerHTML = `<p class="hint" style="margin:0 0 6px">Each row is a day and the morning after it. Tap to edit.</p>` + keys.map(D => {
+      const day = db.days[D], M = addDays(D, 1), m = db.mornings[M];
+      const dayHalf = day
+        ? `<button class="half" type="button" data-open-day="${D}"><span class="head"><b>${fmtDay(D)}</b><em class="status" data-state="${day.status}">${statusOf(day)}</em></span>
+            <span class="tags">${symSummary(day)}${day.stress ? ` · stress ${day.stress}/5` : ""}</span>
+            ${[...(day.tags.food || []), ...(day.tags.helpers || [])].length ? `<span class="tags">${[...(day.tags.food || []), ...(day.tags.helpers || [])].join(" · ")}</span>` : ""}</button>`
+        : `<button class="half" type="button" data-open-day="${D}"><span class="head"><b>${fmtDay(D)}</b></span><span class="tags">No day log. Tap to add one.</span></button>`;
+      const mornHalf = M > today()
+        ? `<div class="half"><b>${weekday(M)} morning</b><span class="tags">Tomorrow</span></div>`
+        : m
+          ? `<button class="half" type="button" data-open-morning="${M}"><span class="head"><b>${weekday(M)} morning</b>${m.overall ? `<span class="pill sm" data-v="${m.overall}" style="background:var(--s${m.overall})">${m.overall}</span>` : `<em class="status" data-state="${m.status}">${statusOf(m)}</em>`}</span>
+              <span class="tags">${m.bm ? `${m.bm} BM${m.bm > 1 ? "s" : ""}${m.bristol ? ` · Bristol ${m.bristol}` : ""}${m.emptied ? ` · emptied: ${EMPTIED[m.emptied].toLowerCase()}` : ""}` : "No bowel movement"}</span>
+              ${(m.tags.morning || []).length ? `<span class="tags">${m.tags.morning.join(" · ")}</span>` : ""}</button>`
+          : `<button class="half" type="button" data-open-morning="${M}"><span class="head"><b>${weekday(M)} morning</b></span><span class="tags">Not logged. Tap to add.</span></button>`;
+      return `<div class="cycle">${dayHalf}${mornHalf}</div>`;
     }).join("");
   }
 
   // ---------- patterns ----------
+  function pairsOf(src) {
+    return Object.values(src.mornings).filter(m => m.overall).sort((a, b) => a.date.localeCompare(b.date))
+      .map(m => ({ m: normMorning(m), d: src.days[addDays(m.date, -1)] ? normDay(src.days[addDays(m.date, -1)]) : null }));
+  }
   function sample() {
     // Example data for the empty state only; never saved.
-    const out = [], rnd = (s => () => (s = (s * 9301 + 49297) % 233280) / 233280)(7);
-    for (let i = 27; i >= 0; i--) {
-      const d = new Date(); d.setDate(d.getDate() - i);
-      const kiwi = rnd() < .4, dairy = rnd() < .35, garlic = rnd() < .3, late = rnd() < .3, walk = rnd() < .5, stress = 1 + Math.floor(rnd() * 5);
-      let s = 4 - (dairy ? 1.2 : 0) - (garlic ? .8 : 0) - (late ? .5 : 0) + (walk ? .6 : 0) + (kiwi ? .5 : 0) - (stress >= 4 ? .9 : 0) + (rnd() - .5);
+    const out = { days: {}, mornings: {} }, rnd = (s => () => (s = (s * 9301 + 49297) % 233280) / 233280)(7);
+    for (let i = 28; i >= 1; i--) {
+      const M = addDays(today(), -i + 1), D = addDays(M, -1);
+      const dairy = rnd() < .35, garlic = rnd() < .3, late = rnd() < .3, kiwi = rnd() < .45, walk = rnd() < .5, tea = rnd() < .5, stress = 1 + Math.floor(rnd() * 5);
+      const gas = Math.round(rnd() * 3 + (dairy ? 2 : 0));
+      let s = 3.8 - (dairy ? 1.1 : 0) - (garlic ? .7 : 0) - (late ? .5 : 0) + (kiwi ? .8 : 0) + (walk ? .5 : 0) + (tea ? .4 : 0) - (stress >= 4 ? .8 : 0) + (rnd() - .5);
       s = Math.max(1, Math.min(5, Math.round(s)));
-      out.push({ date: iso(d), overall: s, stressY: stress, sleepH: 6 + Math.round(rnd() * 4) / 2, bloating: 5 - s > 1 ? 2 : 0, pain: 0, gas: 0, reflux: 0, nausea: 0,
-        tags: { food: [dairy && "Dairy", garlic && "Onion / garlic", late && "Ate late (after 9pm)"].filter(Boolean), helpers: kiwi ? ["Kiwi"] : [], morning: [walk && "Went for a walk", "Had coffee"].filter(Boolean), other: [] } });
+      out.days[D] = { date: D, tags: { food: [dairy && "Dairy", garlic && "Onion / garlic", late && "Ate late (after 9pm)"].filter(Boolean), helpers: kiwi ? ["Kiwi"] : [], other: [] }, stress, water: 6, events: Array.from({ length: gas }, () => ({ type: "gas", t: "15:00", level: 1 })) };
+      out.mornings[M] = { date: M, overall: s, bm: s >= 3 ? 1 : (rnd() < .5 ? 1 : 0), emptied: s >= 4 ? 3 : s >= 3 ? 2 : 1, sleepH: 6 + Math.round(rnd() * 4) / 2, tags: { morning: [walk && "Went for a walk", tea && "Bengal Spice", "Had coffee"].filter(Boolean) } };
     }
     return out;
   }
   const avg = a => a.reduce((x, y) => x + y, 0) / a.length;
-  function factors(L) {
+  function factors(P) {
     const rows = [], MIN = 3;
-    const test = (label, pred) => {
-      const yes = L.filter(pred).map(e => e.overall), no = L.filter(e => !pred(e)).map(e => e.overall);
+    const test = (label, pred, needDay) => {
+      const pool = needDay ? P.filter(x => x.d) : P;
+      const yes = pool.filter(pred).map(x => x.m.overall), no = pool.filter(x => !pred(x)).map(x => x.m.overall);
       if (yes.length >= MIN && no.length >= MIN) rows.push({ label, d: avg(yes) - avg(no), n: yes.length });
     };
-    ["food", "helpers", "morning", "other"].forEach(g => TAGS[g].forEach(t => test(t, e => (e.tags[g] || []).includes(t))));
-    test("High stress yesterday (4 to 5)", e => e.stressY >= 4);
-    test("High stress this morning (4 to 5)", e => e.stressM >= 4);
-    test("Under 6.5 hours of sleep", e => e.sleepH < 6.5);
-    test("Poor sleep quality (1 to 2)", e => e.sleepQ && e.sleepQ <= 2);
-    test("Under 5 glasses of water", e => e.water < 5);
+    ["food", "helpers", "other"].forEach(g => TAGS[g].forEach(t => test(t, x => (x.d.tags[g] || []).includes(t), true)));
+    SYMPTOMS.forEach(([k, l]) => test(`${l} during the day`, x => (x.d.events || []).some(e => e.type === k), true));
+    test("3 or more symptoms logged in the day", x => (x.d.events || []).length >= 3, true);
+    test("High stress in the day (4 to 5)", x => x.d.stress >= 4, true);
+    test("Under 5 glasses of water", x => x.d.water < 5, true);
+    TAGS.morning.forEach(t => test(`${t} (morning)`, x => (x.m.tags.morning || []).includes(t)));
+    test("High stress in the morning (4 to 5)", x => x.m.stressM >= 4);
+    test("Under 6.5 hours of sleep", x => x.m.sleepH < 6.5);
+    test("Poor sleep quality (1 to 2)", x => x.m.sleepQ && x.m.sleepQ <= 2);
     return rows.filter(r => Math.abs(r.d) >= 0.3).sort((a, b) => a.d - b.d);
   }
-  function chart(L) {
+  function chart(P) {
     const days = 28, W = 340, H = 120, pad = { l: 22, r: 8, t: 10, b: 20 };
-    const byDate = Object.fromEntries(L.map(e => [e.date, e]));
+    const byDate = Object.fromEntries(P.map(x => [x.m.date, x.m]));
     const pts = [];
-    for (let i = days - 1; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); const k = iso(d); pts.push({ k, e: byDate[k], x: days - 1 - i }); }
+    for (let i = days - 1; i >= 0; i--) { const k = addDays(today(), -i); pts.push({ k, e: byDate[k], x: days - 1 - i }); }
     const X = i => pad.l + i * (W - pad.l - pad.r) / (days - 1), Y = v => pad.t + (5 - v) * (H - pad.t - pad.b) / 4;
     const grid = [1, 2, 3, 4, 5].map(v => `<line x1="${pad.l}" x2="${W - pad.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)" stroke-width="1"/><text x="${pad.l - 7}" y="${Y(v) + 4}" font-size="10" text-anchor="end" fill="var(--muted)">${v}</text>`).join("");
     const have = pts.filter(p => p.e);
@@ -518,96 +721,126 @@ nav.tabs {
     pts.forEach(p => { if (p.e) seg.push(`${X(p.x).toFixed(1)},${Y(p.e.overall).toFixed(1)}`); else if (seg.length) { path += "M" + seg.join("L"); seg = []; } });
     if (seg.length) path += "M" + seg.join("L");
     const dots = have.map(p => `<circle cx="${X(p.x)}" cy="${Y(p.e.overall)}" r="${p === have[have.length - 1] ? 4.5 : 3}" fill="var(--s${p.e.overall})" stroke="var(--surface)" stroke-width="1.5"/>`).join("");
-    const lbl = i => { const d = parse(pts[i].k); return d.toLocaleDateString(undefined, { day: "numeric", month: "short" }); };
-    return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gut score over the last 4 weeks">${grid}
+    const lbl = i => parse(pts[i].k).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+    return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Morning gut score over the last 4 weeks">${grid}
       <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/>${dots}
       <text x="${X(0)}" y="${H - 4}" font-size="10" fill="var(--muted)">${lbl(0)}</text><text x="${X(days - 1)}" y="${H - 4}" font-size="10" text-anchor="end" fill="var(--muted)">${lbl(days - 1)}</text></svg>`;
   }
   function renderPatterns() {
-    const real = list(), isExample = real.length < 5, L = isExample ? sample() : real;
-    const F = factors(L);
-    const bad = F.filter(r => r.d < 0), good = F.filter(r => r.d > 0).reverse();
+    const real = pairsOf(db), isExample = real.length < 5, P = isExample ? pairsOf(sample()) : real;
+    const F = factors(P), bad = F.filter(r => r.d < 0), good = F.filter(r => r.d > 0).reverse();
     const row = r => {
       const w = Math.min(50, Math.abs(r.d) / 2 * 50);
-      return `<div class="factor"><span>${r.label}<br><span class="n">${r.n} days</span></span>
+      return `<div class="factor"><span>${r.label}<br><span class="n">${r.n} mornings</span></span>
         <span class="bar"><i style="${r.d < 0 ? `right:50%;width:${w}%;background:var(--s1)` : `left:50%;width:${w}%;background:var(--s5)`}"></i></span>
         <span class="delta" style="color:var(${r.d < 0 ? "--s1" : "--s5"})">${r.d > 0 ? "+" : "−"}${Math.abs(r.d).toFixed(1)}</span></div>`;
     };
-    const last7 = L.filter(e => parse(e.date) > new Date(Date.now() - 7 * 864e5)).map(e => e.overall);
-    const recent = last7.length ? avg(last7) : 0;
+    const last7 = P.filter(x => x.m.date > addDays(today(), -7)).map(x => x.m.overall);
+    const recent14 = P.filter(x => x.m.date > addDays(today(), -14) && x.m.bm > 0 && x.m.emptied);
+    const full = recent14.filter(x => x.m.emptied === 3).length;
     $("#patterns").innerHTML = `
-      ${isExample ? `<div class="banner"><p><span class="example-tag">Example</span> These are made-up days to show how this page works. Your own patterns appear after 5 check-ins (you have ${real.length}).</p></div>` : ""}
-      <div class="card"><div class="row" style="justify-content:space-between"><h2>Gut score, last 4 weeks</h2><span class="muted small">${isFinite(recent) && recent ? `7 day average ${recent.toFixed(1)}` : ""}</span></div>${chart(L)}</div>
-      <div class="card"><h2>Linked to worse days</h2><p class="muted small" style="margin:0">Your average gut score the morning after, compared with days without it.</p>
+      ${isExample ? `<div class="banner"><p><span class="example-tag">Example</span> These are made-up days to show how this page works. Your own patterns appear after 5 submitted mornings (you have ${real.length}).</p></div>` : ""}
+      <div class="card"><div class="row" style="justify-content:space-between"><h2>Morning gut score, last 4 weeks</h2><span class="muted small">${last7.length ? `7 day average ${avg(last7).toFixed(1)}` : ""}</span></div>${chart(P)}
+        ${recent14.length ? `<p class="muted small" style="margin:0">Fully emptied on ${full} of ${recent14.length} mornings with a bowel movement in the last 2 weeks.</p>` : ""}</div>
+      <div class="card"><h2>Linked to worse mornings</h2><p class="muted small" style="margin:0">Your average morning score with it, compared with mornings without it. Food, helpers and symptoms are from the day before.</p>
         <div>${bad.length ? bad.map(row).join("") : `<p class="muted small">Nothing stands out yet.</p>`}</div></div>
-      <div class="card"><h2>Linked to better days</h2>
+      <div class="card"><h2>Linked to better mornings</h2>
         <div>${good.length ? good.map(row).join("") : `<p class="muted small">Nothing stands out yet.</p>`}</div></div>
-      <p class="muted small">These are patterns, not proof. A factor needs at least 3 days with it and 3 without before it shows here, and the picture gets clearer over a few weeks. Worth bringing to a doctor or dietitian.</p>`;
+      <p class="muted small">These are patterns, not proof. A factor needs at least 3 mornings with it and 3 without before it shows here, and the picture gets clearer over a few weeks. Worth bringing to a doctor or dietitian.</p>`;
   }
 
-  // ---------- reminder (.ics) ----------
+  // ---------- reminders (.ics) ----------
   const inFrame = (() => { try { return window.self !== window.top; } catch { return true; } })();
   $("#frame-note").hidden = !inFrame;
-  try { const t = localStorage.getItem("digestiv.remind"); if (t) $("#f-remind").value = t; } catch {}
+  try { const t = localStorage.getItem("digestiv.remind"); if (t) $("#f-remind").value = t; const t2 = localStorage.getItem("digestiv.remindEve"); if (t2) $("#f-remind-eve").value = t2; } catch {}
   function download(name, type, text) {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name;
     document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
-  $("#ics-btn").addEventListener("click", () => {
-    const t = $("#f-remind").value || "08:30";
-    try { localStorage.setItem("digestiv.remind", t); } catch {}
-    const [h, m] = t.split(":");
+  function addReminder(time, key, summary, desc, hash) {
+    try { localStorage.setItem(key, time); } catch {}
+    const [h, m] = time.split(":");
     const d = today().replace(/-/g, ""), stamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
-    const url = location.protocol.startsWith("http") && !inFrame ? location.href.split("#")[0] : "";
+    const url = location.protocol.startsWith("http") && !inFrame ? location.href.split("#")[0] + "#" + hash : "";
     const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Digestiv//EN", "BEGIN:VEVENT",
-      `UID:digestiv-daily-${stamp}@digestiv`, `DTSTAMP:${stamp}`, `DTSTART:${d}T${h}${m}00`, "DURATION:PT5M",
-      "RRULE:FREQ=DAILY", "SUMMARY:Digestiv check-in", `DESCRIPTION:How's your gut today? One minute check-in.${url ? "\\n" + url : ""}`,
-      ...(url ? [`URL:${url}`] : []), "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Digestiv check-in", "TRIGGER:PT0M", "END:VALARM",
+      `UID:digestiv-${hash}-${stamp}@digestiv`, `DTSTAMP:${stamp}`, `DTSTART:${d}T${h}${m}00`, "DURATION:PT5M",
+      "RRULE:FREQ=DAILY", `SUMMARY:${summary}`, `DESCRIPTION:${desc}${url ? "\\n" + url : ""}`,
+      ...(url ? [`URL:${url}`] : []), "BEGIN:VALARM", "ACTION:DISPLAY", `DESCRIPTION:${summary}`, "TRIGGER:PT0M", "END:VALARM",
       "END:VEVENT", "END:VCALENDAR"].join("\r\n");
-    download("digestiv-reminder.ics", "text/calendar", ics);
+    download(`digestiv-${hash}-reminder.ics`, "text/calendar", ics);
     try { localStorage.setItem("digestiv.reminderSet", "1"); } catch {}
     $("#reminder-banner").hidden = true;
-  });
+  }
+  $("#ics-morning").addEventListener("click", () => addReminder($("#f-remind").value || "08:30", "digestiv.remind", "Digestiv morning check-in", "Log your morning before and after your bathroom visit.", "morning"));
+  $("#ics-evening").addEventListener("click", () => addReminder($("#f-remind-eve").value || "21:30", "digestiv.remindEve", "Digestiv: submit your day log", "Finish and submit today's day log.", "day"));
   try { $("#reminder-banner").hidden = !!localStorage.getItem("digestiv.reminderSet"); } catch { $("#reminder-banner").hidden = false; }
 
   // ---------- data ----------
   const msg = t => $("#data-msg").textContent = t;
-  $("#export-json").addEventListener("click", () => download(`digestiv-backup-${today()}.json`, "application/json", JSON.stringify({ app: "digestiv", version: 1, entries }, null, 2)));
+  $("#export-json").addEventListener("click", () => { flush(); download(`digestiv-backup-${today()}.json`, "application/json", JSON.stringify({ app: "digestiv", version: 2, days: db.days, mornings: db.mornings }, null, 2)); });
   $("#export-csv").addEventListener("click", () => {
-    const cols = ["date", "overall", ...SYMPTOMS.map(s => s[0]), "bm", "bristol", "emptied", "urgency", "water", "stressY", "sleepH", "sleepQ", "stressM", "food_tags", "helpers_tags", "morning_tags", "other_tags", "food", "notes"];
+    flush();
     const q = v => { v = v === null || v === undefined ? "" : String(v); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
-    const rows = list().reverse().map(e => cols.map(c => q(c.endsWith("_tags") ? (e.tags[c.split("_")[0]] || []).join("; ") : c === "emptied" ? (EMPTIED[e.emptied] || "") : e[c])).join(","));
+    const cols = ["day", "day_status", "food", "food_tags", "helpers", "other_tags", "water", "stress_day", ...SYMPTOMS.map(s => s[0] + "_count"), "symptom_log", "day_notes",
+      "morning", "morning_status", "sleep_hours", "sleep_quality", "morning_tags", "stress_morning", "visit_time", "bowel_movements", "bristol", "emptied", "urgency", "gut_score", "morning_notes"];
+    const keys = [...new Set([...Object.keys(db.days), ...Object.keys(db.mornings).map(m => addDays(m, -1))])].sort();
+    const rows = keys.map(D => {
+      const d = db.days[D] ? normDay(db.days[D]) : null, M = addDays(D, 1), m = db.mornings[M] ? normMorning(db.mornings[M]) : null;
+      const ev = d ? [...d.events].sort((a, b) => a.t.localeCompare(b.t)) : [];
+      return [D, d && d.status, d && d.food, d && d.tags.food.join("; "), d && d.tags.helpers.join("; "), d && d.tags.other.join("; "), d && d.water, d && d.stress,
+        ...SYMPTOMS.map(([k]) => d ? ev.filter(x => x.type === k).length : ""), ev.map(x => `${x.t} ${x.type} ${LEVEL_WORD[x.level]}`).join("; "), d && d.notes,
+        m ? M : "", m && m.status, m && m.sleepH, m && m.sleepQ, m && m.tags.morning.join("; "), m && m.stressM, m && m.attemptAt, m && m.bm, m && m.bristol,
+        m && (EMPTIED[m.emptied] || ""), m && (m.urgency ? "yes" : ""), m && m.overall, m && m.notes].map(q).join(",");
+    });
     download(`digestiv-${today()}.csv`, "text/csv", [cols.join(","), ...rows].join("\n"));
   });
   $("#import-file").addEventListener("change", async e => {
     const f = e.target.files[0]; if (!f) return;
     try {
-      const data = JSON.parse(await f.text()), inc = data.entries || {};
-      const n = Object.keys(inc).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k) && inc[k] && inc[k].overall).length;
+      const data = JSON.parse(await f.text());
+      const inc = data.days || data.mornings ? { days: data.days || {}, mornings: data.mornings || {} } : migrateV1(data.entries);
+      const ok = k => /^\d{4}-\d{2}-\d{2}$/.test(k);
+      let n = 0;
+      Object.entries(inc.days).forEach(([k, v]) => { if (ok(k) && v) { db.days[k] = v; n++; } });
+      Object.entries(inc.mornings).forEach(([k, v]) => { if (ok(k) && v) { db.mornings[k] = v; n++; } });
       if (!n) throw new Error();
-      Object.keys(inc).forEach(k => { if (/^\d{4}-\d{2}-\d{2}$/.test(k) && inc[k] && inc[k].overall) entries[k] = inc[k]; });
-      persist(); msg(`Imported ${n} check-ins.`); updateBadge();
+      persist(); msg(`Imported ${n} logs.`); updateBadge();
+      openDay(S.day.date); openMorning(S.morning.date);
     } catch { msg("That file isn't a Digestiv backup. Choose a .json file exported from this app."); }
     e.target.value = "";
   });
-  $("#clear-btn").addEventListener("click", () => { $("#clear-count").textContent = Object.keys(entries).length; $("#clear-confirm").hidden = false; });
+  $("#clear-btn").addEventListener("click", () => { $("#clear-count").textContent = Object.keys(db.days).length + Object.keys(db.mornings).length; $("#clear-confirm").hidden = false; });
   $("#clear-no").addEventListener("click", () => $("#clear-confirm").hidden = true);
-  $("#clear-yes").addEventListener("click", () => { entries = {}; persist(); $("#clear-confirm").hidden = true; msg("All check-ins deleted."); updateBadge(); });
+  $("#clear-yes").addEventListener("click", () => {
+    clearTimeout(timer); pending = null;
+    db = { days: {}, mornings: {} }; persist();
+    try { localStorage.removeItem(KEY1); } catch {}
+    $("#clear-confirm").hidden = true; msg("All logs deleted."); updateBadge();
+    openDay(today()); openMorning(today());
+  });
 
-  // ---------- badge + offline ----------
+  // ---------- badge, day rollover, offline ----------
   function updateBadge() {
-    try { if ("setAppBadge" in navigator) entries[today()] ? navigator.clearAppBadge() : navigator.setAppBadge(1); } catch {}
+    try { if ("setAppBadge" in navigator) (db.mornings[today()] && db.mornings[today()].status === "submitted") ? navigator.clearAppBadge() : navigator.setAppBadge(1); } catch {}
   }
-  updateBadge();
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) { updateBadge(); if (!$("#view-checkin").hidden && $("#f-date").value !== today() && !entries[$("#f-date").value]) openDay(today()); } });
+  const defaultPart = () => (new Date().getHours() < 12 && !(db.mornings[today()] && db.mornings[today()].status === "submitted")) ? "morning" : "day";
+  let openedOn = today();
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) return flush();
+    updateBadge();
+    if (today() !== openedOn) { openedOn = today(); openDay(today()); openMorning(today()); showPart(defaultPart()); }
+  });
+  window.addEventListener("pagehide", flush);
   if ("serviceWorker" in navigator && !inFrame && /^https:|^http:\/\/localhost/.test(location.href)) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 
-  $("#f-date").max = today();
+  $("#d-date").max = $("#m-date").max = today();
+  openDay(today()); openMorning(today());
+  updateBadge();
   const start = location.hash.replace("#", "");
-  openDay(today());
-  if (["history", "patterns", "settings"].includes(start)) show(start); else show("checkin");
+  showPart(start === "day" || start === "morning" ? start : defaultPart());
+  show(["history", "patterns", "settings"].includes(start) ? start : "checkin");
 })();
 </script>

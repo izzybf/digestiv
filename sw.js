@@ -1,5 +1,5 @@
 // Offline cache for Digestiv. Bump VERSION when app files change.
-const VERSION = "digestiv-v3";
+const VERSION = "digestiv-v4";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon.svg", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
 self.addEventListener("install", e => {

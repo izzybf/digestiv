@@ -1,6 +1,6 @@
 # Digestiv
 
-A one-minute daily check-in to understand your digestion: how your gut feels today, what you ate yesterday, stress, sleep and your morning. The Patterns tab shows which foods and habits line up with better and worse days.
+Track your digestion in two parts: a **day log** (food, gut helpers, stress and symptoms logged as they happen, saved as you go and submitted before bed) and a **morning check-in** (sleep and what you did before your bathroom visit, then the result). Each day log pairs with the next morning, and the Patterns tab shows which foods, habits and symptoms line up with better and worse mornings.
 
 Live app: https://izzybf.github.io/digestiv/ (open on your phone and use "Add to Home Screen").
 

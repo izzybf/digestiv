@@ -444,6 +444,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
       <div class="card">
         <h2>Current medications</h2>
         <div id="meds-current"></div>
+        <div class="row" style="gap:8px"><button class="linkish" type="button" id="med-add-open" hidden>+ Add medication</button><span class="toast small" id="med-msg" role="status"></span></div>
       </div>
       <form class="card" id="med-form" autocomplete="off">
         <h2 id="med-form-title">Add a medication</h2>
@@ -458,7 +459,6 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
         <div class="row" style="gap:8px">
           <button class="btn primary" type="submit" id="med-save">Add medication</button>
           <button class="btn quiet" type="button" id="med-cancel" hidden>Cancel</button>
-          <span class="toast small" id="med-msg" role="status"></span>
         </div>
       </form>
       <div class="card" id="meds-past-card" hidden>
@@ -790,18 +790,28 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     $("#meds-current").innerHTML = cur.length ? cur.map(m => medRow(m, false)).join("") : `<p class="muted small" style="margin:0">No medications yet. Add one below and it will show up as a checkbox in your day log.</p>`;
     $("#meds-past-card").hidden = !past.length;
     $("#meds-past").innerHTML = past.map(m => medRow(m, true)).join("");
+    if (!db.meds.length) setMedForm(false);
+  }
+  // With no medications the form is always shown; otherwise it opens on demand.
+  function setMedForm(open) {
+    const show = open || !db.meds.length;
+    $("#med-form").hidden = !show;
+    $("#med-add-open").hidden = show;
+    $("#med-cancel").hidden = !(show && db.meds.length);
   }
   function resetMedForm() {
     $("#med-id").value = ""; ["name", "dose", "sched", "notes"].forEach(k => $("#med-" + k).value = ""); $("#med-start").value = today();
-    $("#med-form-title").textContent = "Add a medication"; $("#med-save").textContent = "Add medication"; $("#med-cancel").hidden = true;
+    $("#med-form-title").textContent = "Add a medication"; $("#med-save").textContent = "Add medication";
+    setMedForm(false);
   }
   function editMed(id) {
     const m = medById(id); if (!m) return;
     $("#med-id").value = m.id; $("#med-name").value = m.name; $("#med-dose").value = m.dose || ""; $("#med-sched").value = m.schedule || ""; $("#med-start").value = m.start || ""; $("#med-notes").value = m.notes || "";
-    $("#med-form-title").textContent = `Edit ${m.name}`; $("#med-save").textContent = "Save changes"; $("#med-cancel").hidden = false; medMsg("");
+    $("#med-form-title").textContent = `Edit ${m.name}`; $("#med-save").textContent = "Save changes"; setMedForm(true); medMsg("");
     $("#med-form").scrollIntoView({ block: "start" }); $("#med-name").focus();
   }
   $("#med-cancel").addEventListener("click", () => { resetMedForm(); medMsg(""); });
+  $("#med-add-open").addEventListener("click", () => { resetMedForm(); setMedForm(true); medMsg(""); $("#med-name").focus(); });
   $("#med-form").addEventListener("submit", e => {
     e.preventDefault();
     const name = $("#med-name").value.trim();

@@ -145,18 +145,9 @@ header.top .titles { flex: 1; min-width: 0; }
 .status:empty { display: none; }
 .status[data-state="draft"] { background: color-mix(in srgb, var(--s3) 35%, var(--surface)); color: var(--ink); }
 .status[data-state="submitted"] { background: var(--accent-soft); color: var(--accent); }
-.quicklog { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-.quicklog button { font: inherit; cursor: pointer; border: 1.5px solid var(--accent); background: var(--surface); color: var(--accent); border-radius: 12px; padding: 12px 6px; font-weight: 700; }
-.quicklog button:active { background: var(--accent); color: var(--accent-ink); }
-.events { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.event { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding-block: 4px; border-top: 1px solid var(--line); }
-.event:first-child { border-top: 0; }
-.ev-main { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; min-width: 0; }
-.event input[type="time"] { padding: 5px 6px; font-size: 0.85rem; }
-.event .ev-name { font-weight: 600; font-size: 0.95rem; }
-.seg.ev-level { grid-auto-columns: auto; gap: 3px; }
-.seg.ev-level button { padding: 5px 7px; font-size: 0.75rem; }
-.ev-del { font: inherit; border: 0; background: transparent; color: var(--muted); font-size: 1.3rem; line-height: 1; cursor: pointer; width: 32px; height: 32px; border-radius: 8px; }
+.sym { display: grid; grid-template-columns: minmax(0, 6.5rem) minmax(0, 1fr); gap: 8px 10px; align-items: center; }
+.sym .name { font-size: 0.95rem; font-weight: 600; }
+.sym .seg button { padding: 8px 2px; font-size: 0.8rem; }
 .toast button { font: inherit; color: var(--accent); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 0; font-weight: 600; }
 .cycle { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding-block: 10px; border-top: 1px solid var(--line); }
 .cycle:first-child { border-top: 0; }
@@ -222,8 +213,6 @@ section.block, section.block:first-of-type { background: var(--surface); border:
 .checks .chip[aria-pressed="true"] .box::after { border-color: var(--accent); }
 .stepper, textarea, input[type="date"], input[type="time"] { background: var(--bg); border-color: transparent; }
 .formhead input[type="date"] { background: var(--surface); }
-.quicklog button { border: 0; background: var(--accent-soft); color: var(--accent); }
-.quicklog button:active { background: var(--accent); color: var(--accent-ink); }
 .banner { background: var(--surface); box-shadow: var(--shadow); border-radius: 16px; }
 .btn { border: 0; border-radius: 14px; padding: 12px 18px; background: var(--surface); box-shadow: var(--shadow); }
 .btn.primary { flex: 1; background: var(--accent); color: var(--accent-ink); }
@@ -266,10 +255,9 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
       </div>
 
       <section class="block">
-        <h2>Symptoms as they happen</h2>
-        <p class="hint" style="margin:0">Tap one the moment you notice it. You can change the time or strength after.</p>
-        <div class="quicklog" id="quicklog"></div>
-        <ol class="events" id="events" aria-label="Symptoms logged"></ol>
+        <h2>Symptoms today</h2>
+        <p class="hint" style="margin:0">Set how strong each one has been. Change it any time as the day goes on.</p>
+        <div class="sym" id="symptoms"></div>
       </section>
 
       <section class="block">
@@ -474,8 +462,11 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   const KEY1 = "digestiv.entries.v1", KEY2 = "digestiv.v2";
   const SYMPTOMS = [["gas", "Gas"], ["bloating", "Bloating"], ["cramping", "Cramping"], ["reflux", "Reflux"], ["nausea", "Nausea"], ["urgency", "Urgency"]];
   const SYM_LABEL = Object.fromEntries(SYMPTOMS);
-  const LEVELS = ["", "Mild", "Mod.", "Strong"];
-  const LEVEL_WORD = ["", "mild", "moderate", "strong"];
+  const LEVELS = ["None", "Mild", "Mod.", "Strong"];
+  const LEVEL_WORD = ["none", "mild", "moderate", "strong"];
+  const blankSym = () => Object.fromEntries(SYMPTOMS.map(([k]) => [k, 0]));
+  // Older day logs stored timed symptom taps; keep the strongest level per symptom.
+  const symFromEvents = ev => { const o = blankSym(); (ev || []).forEach(x => { if (x.type in o) o[x.type] = Math.max(o[x.type], x.level || 1); }); return o; };
   const BRISTOL = [
     "Separate hard lumps (constipated)", "Lumpy and sausage-shaped (constipated)", "Sausage with cracks (normal)",
     "Smooth, soft sausage (ideal)", "Soft blobs with clear edges (lacking fibre)", "Mushy with ragged edges (mild diarrhoea)", "Watery, no solid pieces (diarrhoea)"
@@ -522,7 +513,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
       const hasDay = e.food || (t.food || []).length || (t.helpers || []).length || (t.other || []).length || e.stressY;
       if (hasDay && !out.days[prev]) out.days[prev] = {
         date: prev, food: e.food || "", tags: { food: t.food || [], helpers: t.helpers || [], other: t.other || [] },
-        water: e.water ?? 6, stress: e.stressY ?? null, events: [], notes: "", status: "submitted", savedAt: e.savedAt || null
+        water: e.water ?? 6, stress: e.stressY ?? null, sym: blankSym(), notes: "", status: "submitted", savedAt: e.savedAt || null
       };
     });
     return out;
@@ -541,18 +532,18 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   load();
   try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
 
-  const blankDay = d => ({ date: d, food: "", tags: { food: [], helpers: [], other: [] }, water: 6, stress: null, events: [], notes: "", status: null });
+  const blankDay = d => ({ date: d, food: "", tags: { food: [], helpers: [], other: [] }, water: 6, stress: null, sym: blankSym(), notes: "", status: null });
   function blankMorning(d) {
     const last = Object.values(db.mornings).filter(m => m.date < d).sort((a, b) => b.date.localeCompare(a.date))[0];
     return { date: d, sleepH: last ? last.sleepH : 7, sleepQ: null, stressM: null, tags: { morning: [] }, attemptAt: "", bm: 1, bristol: null, emptied: null, urgency: false, overall: null, notes: "", status: null };
   }
-  const normDay = r => Object.assign(blankDay(r.date), r, { tags: Object.assign({ food: [], helpers: [], other: [] }, r.tags || {}), events: r.events || [] });
+  const normDay = r => Object.assign(blankDay(r.date), r, { tags: Object.assign({ food: [], helpers: [], other: [] }, r.tags || {}), sym: Object.assign(blankSym(), r.sym || symFromEvents(r.events)) });
   const normMorning = r => Object.assign(blankMorning(r.date), r, { tags: Object.assign({ morning: [] }, r.tags || {}) });
 
   // ---------- build controls ----------
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
   $$("[data-icon]").forEach(i => i.innerHTML = ICONS[i.dataset.icon]);
-  $("#quicklog").innerHTML = SYMPTOMS.map(([k, l]) => `<button type="button" data-log="${k}">${l}</button>`).join("");
+  $("#symptoms").innerHTML = SYMPTOMS.map(([k, l]) => `<div class="name">${l}</div><div class="seg" data-sym="${k}" role="group" aria-label="${l}">${LEVELS.map((w, i) => `<button type="button" data-l="${i}">${w}</button>`).join("")}</div>`).join("");
   $(".bristol").innerHTML = BRISTOL.map((d, i) => `<button type="button" data-v="${i + 1}" title="${d}">${i + 1}</button>`).join("");
   $$("[data-tags]").forEach(box => {
     box.innerHTML = TAGS[box.dataset.tags].map(t => `<button type="button" class="chip" data-tag="${t}" aria-pressed="false"><span class="box" aria-hidden="true"></span>${t}</button>`).join("");
@@ -575,7 +566,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     f.querySelectorAll("[data-tags]").forEach(box => box.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", String((st.tags[box.dataset.tags] || []).includes(c.dataset.tag)))));
     f.querySelectorAll("[data-toggle]").forEach(b => b.setAttribute("aria-pressed", String(!!st[b.dataset.toggle])));
     f.querySelectorAll("[data-text]").forEach(t => { if (document.activeElement !== t) t.value = st[t.dataset.text] || ""; });
-    if (p === "day") renderEvents();
+    if (p === "day") $$("[data-sym]").forEach(seg => seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(st.sym[seg.dataset.sym] === Number(b.dataset.l)))));
     else {
       $("#m-bm-detail").hidden = st.bm === 0;
       $("#bristol-desc").textContent = st.bristol ? `Type ${st.bristol}: ${BRISTOL[st.bristol - 1]}` : "1 is hard lumps, 4 is smooth and soft, 7 is watery.";
@@ -591,16 +582,6 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     // the switch shows today's state for each part
     [["day", db.days[today()]], ["morning", db.mornings[today()]]].forEach(([k, r]) => { const s = $("#sw-" + k); s.textContent = statusOf(r); s.dataset.state = r ? r.status : ""; });
   }
-  function renderEvents() {
-    const ev = [...S.day.events].sort((a, b) => a.t.localeCompare(b.t));
-    $("#events").innerHTML = ev.length ? ev.map(x => `<li class="event">
-        <span class="ev-main"><span class="ev-name">${SYM_LABEL[x.type]}</span>
-        <input type="time" value="${x.t}" data-ev-time="${x.id}" aria-label="Time of ${SYM_LABEL[x.type]}"></span>
-        <span class="seg ev-level" role="group" aria-label="Strength">${[1, 2, 3].map(l => `<button type="button" data-ev-level="${x.id}" data-l="${l}" aria-pressed="${x.level === l}">${LEVELS[l]}</button>`).join("")}</span>
-        <button type="button" class="ev-del" data-ev-del="${x.id}" aria-label="Remove ${SYM_LABEL[x.type]} at ${x.t}">×</button></li>`).join("")
-      : `<li class="muted small">Nothing logged yet.</li>`;
-  }
-
   // Save keeps a submitted record submitted; new records start as drafts.
   function save(p, status) {
     const st = S[p], rec = store(p)[st.date];
@@ -647,15 +628,8 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
 
   document.addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.log) {
-      const t = hm(new Date());
-      S.day.events.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5), t, type: b.dataset.log, level: 1 });
-      flush(); render("day");
-      $("#d-toast").textContent = save("day") ? `Logged ${SYM_LABEL[b.dataset.log].toLowerCase()} at ${t}.` : failMsg;
-      return;
-    }
-    if (b.dataset.evLevel) { const x = S.day.events.find(x => x.id === b.dataset.evLevel); if (x) { x.level = Number(b.dataset.l); render("day"); autosave("day"); } return; }
-    if (b.dataset.evDel) { S.day.events = S.day.events.filter(x => x.id !== b.dataset.evDel); render("day"); autosave("day"); return; }
+    const symSeg = b.closest("[data-sym]");
+    if (symSeg) { S.day.sym[symSeg.dataset.sym] = Number(b.dataset.l); render("day"); autosave("day"); return; }
     const f = b.closest("form[data-part]"), p = f && f.dataset.part;
     if (p) {
       const st = S[p];
@@ -688,10 +662,6 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   document.addEventListener("input", e => {
     const t = e.target, f = t.closest("form[data-part]");
     if (f && t.dataset.text) { S[f.dataset.part][t.dataset.text] = t.value; autosave(f.dataset.part); }
-  });
-  $("#events").addEventListener("change", e => {
-    const id = e.target.dataset.evTime; if (!id || !e.target.value) return;
-    const x = S.day.events.find(x => x.id === id); if (x) { x.t = e.target.value; save("day"); render("day"); }
   });
   const clampDate = v => v > today() ? today() : v;
   $("#d-date").addEventListener("change", e => { if (e.target.value) openDay(clampDate(e.target.value)); });
@@ -728,9 +698,9 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   }
 
   function symSummary(day) {
-    const c = {}; (day.events || []).forEach(x => c[x.type] = (c[x.type] || 0) + 1);
-    const s = Object.entries(c).map(([k, n]) => `${SYM_LABEL[k].toLowerCase()} ×${n}`);
-    return s.length ? s.join(", ") : "No symptoms logged";
+    const sym = normDay(day).sym;
+    const s = SYMPTOMS.filter(([k]) => sym[k] > 0).map(([k, l]) => `${l.toLowerCase()} ${LEVEL_WORD[sym[k]]}`);
+    return s.length ? s.join(", ") : "No symptoms";
   }
   function renderHistory() {
     const keys = [...new Set([...Object.keys(db.days), ...Object.keys(db.mornings).map(m => addDays(m, -1))])].sort().reverse();
@@ -765,10 +735,10 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     for (let i = 28; i >= 1; i--) {
       const M = addDays(today(), -i + 1), D = addDays(M, -1);
       const dairy = rnd() < .35, garlic = rnd() < .3, late = rnd() < .3, kiwi = rnd() < .45, walk = rnd() < .5, tea = rnd() < .5, stress = 1 + Math.floor(rnd() * 5);
-      const gas = Math.round(rnd() * 3 + (dairy ? 2 : 0));
+      const gas = Math.min(3, Math.round(rnd() * 1.5 + (dairy ? 1.5 : 0)));
       let s = 3.8 - (dairy ? 1.1 : 0) - (garlic ? .7 : 0) - (late ? .5 : 0) + (kiwi ? .8 : 0) + (walk ? .5 : 0) + (tea ? .4 : 0) - (stress >= 4 ? .8 : 0) + (rnd() - .5);
       s = Math.max(1, Math.min(5, Math.round(s)));
-      out.days[D] = { date: D, tags: { food: [dairy && "Dairy", garlic && "Onion / garlic", late && "Ate late (after 9pm)"].filter(Boolean), helpers: kiwi ? ["Kiwi"] : [], other: [] }, stress, water: 6, events: Array.from({ length: gas }, () => ({ type: "gas", t: "15:00", level: 1 })) };
+      out.days[D] = { date: D, tags: { food: [dairy && "Dairy", garlic && "Onion / garlic", late && "Ate late (after 9pm)"].filter(Boolean), helpers: kiwi ? ["Kiwi"] : [], other: [] }, stress, water: 6, sym: Object.assign(blankSym(), { gas }) };
       out.mornings[M] = { date: M, overall: s, bm: s >= 3 ? 1 : (rnd() < .5 ? 1 : 0), emptied: s >= 4 ? 3 : s >= 3 ? 2 : 1, sleepH: 6 + Math.round(rnd() * 4) / 2, tags: { morning: [walk && "Went for a walk", tea && "Bengal Spice", "Had coffee"].filter(Boolean) } };
     }
     return out;
@@ -782,8 +752,8 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
       if (yes.length >= MIN && no.length >= MIN) rows.push({ label, d: avg(yes) - avg(no), n: yes.length });
     };
     ["food", "helpers", "other"].forEach(g => TAGS[g].forEach(t => test(t, x => (x.d.tags[g] || []).includes(t), true)));
-    SYMPTOMS.forEach(([k, l]) => test(`${l} during the day`, x => (x.d.events || []).some(e => e.type === k), true));
-    test("3 or more symptoms logged in the day", x => (x.d.events || []).length >= 3, true);
+    SYMPTOMS.forEach(([k, l]) => test(`${l} during the day`, x => x.d.sym[k] > 0, true));
+    test("A strong symptom during the day", x => Object.values(x.d.sym).some(v => v >= 3), true);
     test("High stress in the day (4 to 5)", x => x.d.stress >= 4, true);
     test("Under 5 glasses of water", x => x.d.water < 5, true);
     TAGS.morning.forEach(t => test(`${t} (morning)`, x => (x.m.tags.morning || []).includes(t)));
@@ -865,14 +835,13 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   $("#export-csv").addEventListener("click", () => {
     flush();
     const q = v => { v = v === null || v === undefined ? "" : String(v); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
-    const cols = ["day", "day_status", "food", "food_tags", "helpers", "other_tags", "water", "stress_day", ...SYMPTOMS.map(s => s[0] + "_count"), "symptom_log", "day_notes",
+    const cols = ["day", "day_status", "food", "food_tags", "helpers", "other_tags", "water", "stress_day", ...SYMPTOMS.map(s => s[0]), "day_notes",
       "morning", "morning_status", "sleep_hours", "sleep_quality", "morning_tags", "stress_morning", "visit_time", "bowel_movements", "bristol", "emptied", "urgency", "gut_score", "morning_notes"];
     const keys = [...new Set([...Object.keys(db.days), ...Object.keys(db.mornings).map(m => addDays(m, -1))])].sort();
     const rows = keys.map(D => {
       const d = db.days[D] ? normDay(db.days[D]) : null, M = addDays(D, 1), m = db.mornings[M] ? normMorning(db.mornings[M]) : null;
-      const ev = d ? [...d.events].sort((a, b) => a.t.localeCompare(b.t)) : [];
       return [D, d && d.status, d && d.food, d && d.tags.food.join("; "), d && d.tags.helpers.join("; "), d && d.tags.other.join("; "), d && d.water, d && d.stress,
-        ...SYMPTOMS.map(([k]) => d ? ev.filter(x => x.type === k).length : ""), ev.map(x => `${x.t} ${x.type} ${LEVEL_WORD[x.level]}`).join("; "), d && d.notes,
+        ...SYMPTOMS.map(([k]) => d ? LEVEL_WORD[d.sym[k]] : ""), d && d.notes,
         m ? M : "", m && m.status, m && m.sleepH, m && m.sleepQ, m && m.tags.morning.join("; "), m && m.stressM, m && m.attemptAt, m && m.bm, m && m.bristol,
         m && (EMPTIED[m.emptied] || ""), m && (m.urgency ? "yes" : ""), m && m.overall, m && m.notes].map(q).join(",");
     });

@@ -248,6 +248,24 @@ div.half { box-shadow: none; border: 1.5px dashed var(--line); }
 .status[data-state="submitted"] { background: var(--accent-soft); color: var(--accent); }
 nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding: 6px; border: 0; border-radius: 20px; background: var(--surface); box-shadow: 0 8px 30px rgba(20, 20, 30, .14); }
 .tab[aria-selected="true"] { background: var(--accent-soft); color: var(--accent); }
+/* Desktop: use more of the window; check-in sections flow into two columns, other pages into a two-column grid. */
+@media (min-width: 900px) {
+  .wrap { max-width: 72rem; padding-inline: 32px; padding-block: 32px 120px; }
+  h1 { font-size: 2.4rem; }
+  .switch { max-width: 44rem; }
+  .wrap form[data-part] { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+  form[data-part] > .formhead, form[data-part] > #m-pair, form[data-part] > .savebar { grid-column: 1 / -1; }
+  #form-day > section.block:nth-of-type(1) { grid-column: 1; grid-row: 2; }
+  #form-day > section.block:nth-of-type(2) { grid-column: 2; grid-row: 2 / span 2; }
+  #form-day > section.block:nth-of-type(3) { grid-column: 1; grid-row: 3; }
+  .stack { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .wide { grid-column: 1 / -1; }
+  .card.wide .chart { max-height: 260px; }
+  .savebar .btn.primary { flex: 0 1 18rem; }
+  #history-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
+  #history-list .cycle:nth-child(2), #history-list .cycle:nth-child(3) { border-top: 0; }
+  nav.tabs { left: 50%; right: auto; transform: translateX(-50%); width: min(36rem, calc(100% - 24px)); }
+}
 </style>
 
 <div class="wrap">
@@ -824,7 +842,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     const keys = [...new Set([...Object.keys(db.days), ...Object.keys(db.mornings).map(m => addDays(m, -1))])].sort().reverse();
     const box = $("#history-list");
     if (!keys.length) { box.innerHTML = `<div class="card"><h2>Nothing logged yet</h2><p class="muted" style="margin:0">Each row pairs a day log with the morning after it. Tap either half to edit it.</p><div><button class="btn primary" type="button" data-view="checkin">Check in now</button></div></div>`; return; }
-    box.innerHTML = `<p class="hint" style="margin:0 0 6px">Each row is a day and the morning after it. Tap to edit.</p>` + keys.map(D => {
+    box.innerHTML = `<p class="hint wide" style="margin:0 0 6px">Each row is a day and the morning after it. Tap to edit.</p>` + keys.map(D => {
       const day = db.days[D], M = addDays(D, 1), m = db.mornings[M];
       const dayHalf = day
         ? `<button class="half day" type="button" data-open-day="${D}"><span class="head"><b class="label"><i class="ico">${ICONS.day}</i>${fmtDay(D)}</b><em class="status" data-state="${day.status}">${statusOf(day)}</em></span>
@@ -912,14 +930,14 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     const recent14 = P.filter(x => x.m.date > addDays(today(), -14) && x.m.bm > 0 && x.m.emptied);
     const full = recent14.filter(x => x.m.emptied === 3).length;
     $("#patterns").innerHTML = `
-      ${isExample ? `<div class="banner"><p><span class="example-tag">Example</span> These are made-up days to show how this page works. Your own patterns appear after 5 submitted mornings (you have ${real.length}).</p></div>` : ""}
-      <div class="card"><div class="row" style="justify-content:space-between"><h2>Morning gut score, last 4 weeks</h2><span class="muted small">${last7.length ? `7 day average ${avg(last7).toFixed(1)}` : ""}</span></div>${chart(P)}
+      ${isExample ? `<div class="banner wide"><p><span class="example-tag">Example</span> These are made-up days to show how this page works. Your own patterns appear after 5 submitted mornings (you have ${real.length}).</p></div>` : ""}
+      <div class="card wide"><div class="row" style="justify-content:space-between"><h2>Morning gut score, last 4 weeks</h2><span class="muted small">${last7.length ? `7 day average ${avg(last7).toFixed(1)}` : ""}</span></div>${chart(P)}
         ${recent14.length ? `<p class="muted small" style="margin:0">Fully emptied on ${full} of ${recent14.length} mornings with a bowel movement in the last 2 weeks.</p>` : ""}</div>
       <div class="card"><h2>Linked to worse mornings</h2><p class="muted small" style="margin:0">Your average morning score with it, compared with mornings without it. Food, helpers and symptoms are from the day before.</p>
         <div>${bad.length ? bad.map(row).join("") : `<p class="muted small">Nothing stands out yet.</p>`}</div></div>
       <div class="card"><h2>Linked to better mornings</h2>
         <div>${good.length ? good.map(row).join("") : `<p class="muted small">Nothing stands out yet.</p>`}</div></div>
-      <p class="muted small">These are patterns, not proof. A factor needs at least 3 mornings with it and 3 without before it shows here, and the picture gets clearer over a few weeks. Worth bringing to a doctor or dietitian.</p>`;
+      <p class="muted small wide">These are patterns, not proof. A factor needs at least 3 mornings with it and 3 without before it shows here, and the picture gets clearer over a few weeks. Worth bringing to a doctor or dietitian.</p>`;
   }
 
   // ---------- reminders (.ics) ----------

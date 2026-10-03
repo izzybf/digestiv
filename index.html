@@ -299,11 +299,6 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
           <div class="checks" data-tags="helpers"></div>
         </div>
         <div class="q">
-          <div class="label">Medications taken</div>
-          <div class="checks" id="d-meds"></div>
-          <p class="hint" id="d-meds-empty" style="margin:0">Add your medications in the <button type="button" class="linkish" data-view="meds">Meds tab</button> to tick them off here.</p>
-        </div>
-        <div class="q">
           <div class="label">Glasses of water</div>
           <div class="stepper" data-field="water" data-step="1" data-min="0" data-max="20">
             <button type="button" data-d="-1" aria-label="Fewer">−</button><output>0</output><button type="button" data-d="1" aria-label="More">+</button>
@@ -628,10 +623,6 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     f.querySelectorAll("[data-text]").forEach(t => { if (document.activeElement !== t) t.value = st[t.dataset.text] || ""; });
     if (p === "day") {
       $$("[data-sym]").forEach(seg => seg.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(st.sym[seg.dataset.sym] === Number(b.dataset.l)))));
-      // medications active on this day, plus any already ticked
-      const list = db.meds.filter(m => st.meds.includes(m.id) || ((!m.start || m.start <= st.date) && (!m.end || m.end >= st.date)));
-      $("#d-meds").innerHTML = list.map(m => `<button type="button" class="chip" data-med="${m.id}" aria-pressed="${st.meds.includes(m.id)}"><span class="box" aria-hidden="true"></span>${esc(m.name)}${m.dose ? ` <span class="hint">${esc(m.dose)}</span>` : ""}</button>`).join("");
-      $("#d-meds-empty").hidden = list.length > 0;
     }
     else {
       $("#m-bm-detail").hidden = st.bm === 0;
@@ -694,7 +685,6 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
 
   document.addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.med) { const a = S.day.meds, i = a.indexOf(b.dataset.med); i >= 0 ? a.splice(i, 1) : a.push(b.dataset.med); render("day"); autosave("day"); return; }
     if (b.dataset.medEdit) return editMed(b.dataset.medEdit);
     if (b.dataset.medStop) { const m = medById(b.dataset.medStop); if (m) { m.end = today(); persist(); renderMeds(); medMsg(`Moved ${m.name} to past medications.`); } return; }
     if (b.dataset.medRestart) { const m = medById(b.dataset.medRestart); if (m) { m.end = null; persist(); renderMeds(); medMsg(`${m.name} is current again.`); } return; }
@@ -775,6 +765,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   // ---------- medications ----------
   let pendingDel = null;
   const medById = id => db.meds.find(m => m.id === id);
+  const medActiveOn = (m, d) => (!m.start || m.start <= d) && (!m.end || m.end >= d);
   const medMsg = t => $("#med-msg").textContent = t;
   function medRow(m, past) {
     const since = m.start ? `since ${fmtDay(m.start)}` : "";
@@ -787,7 +778,7 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   function renderMeds() {
     pendingDel = null;
     const cur = db.meds.filter(m => !m.end || m.end > today()), past = db.meds.filter(m => m.end && m.end <= today());
-    $("#meds-current").innerHTML = cur.length ? cur.map(m => medRow(m, false)).join("") : `<p class="muted small" style="margin:0">No medications yet. Add one below and it will show up as a checkbox in your day log.</p>`;
+    $("#meds-current").innerHTML = cur.length ? cur.map(m => medRow(m, false)).join("") : `<p class="muted small" style="margin:0">No medications yet. Add what you take below. Each one counts as taken as prescribed from its start date until you mark it stopped.</p>`;
     $("#meds-past-card").hidden = !past.length;
     $("#meds-past").innerHTML = past.map(m => medRow(m, true)).join("");
     if (!db.meds.length) setMedForm(false);
@@ -881,7 +872,8 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     ["food", "helpers", "other"].forEach(g => TAGS[g].forEach(t => test(t, x => (x.d.tags[g] || []).includes(t), true)));
     SYMPTOMS.forEach(([k, l]) => test(`${l} during the day`, x => x.d.sym[k] > 0, true));
     test("A strong symptom during the day", x => Object.values(x.d.sym).some(v => v >= 3), true);
-    db.meds.forEach(m => test(`Took ${m.name}`, x => (x.d.meds || []).includes(m.id), true));
+    // Listed medications count as taken as prescribed between their start and stop dates.
+    db.meds.forEach(m => test(`On ${m.name}`, x => medActiveOn(m, addDays(x.m.date, -1))));
     test("High stress in the day (4 to 5)", x => x.d.stress >= 4, true);
     test("Under 5 glasses of water", x => x.d.water < 5, true);
     TAGS.morning.forEach(t => test(`${t} (morning)`, x => (x.m.tags.morning || []).includes(t)));
@@ -963,12 +955,12 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
   $("#export-csv").addEventListener("click", () => {
     flush();
     const q = v => { v = v === null || v === undefined ? "" : String(v); return /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v; };
-    const cols = ["day", "day_status", "food", "food_tags", "helpers", "other_tags", "meds_taken", "water", "stress_day", ...SYMPTOMS.map(s => s[0]), "day_notes",
+    const cols = ["day", "day_status", "food", "food_tags", "helpers", "other_tags", "medications", "water", "stress_day", ...SYMPTOMS.map(s => s[0]), "day_notes",
       "morning", "morning_status", "sleep_hours", "sleep_quality", "morning_tags", "stress_morning", "visit_time", "bowel_movements", "bristol", "emptied", "urgency", "gut_score", "morning_notes"];
     const keys = [...new Set([...Object.keys(db.days), ...Object.keys(db.mornings).map(m => addDays(m, -1))])].sort();
     const rows = keys.map(D => {
       const d = db.days[D] ? normDay(db.days[D]) : null, M = addDays(D, 1), m = db.mornings[M] ? normMorning(db.mornings[M]) : null;
-      return [D, d && d.status, d && d.food, d && d.tags.food.join("; "), d && d.tags.helpers.join("; "), d && d.tags.other.join("; "), d && d.meds.map(id => (medById(id) || { name: id }).name).join("; "), d && d.water, d && d.stress,
+      return [D, d && d.status, d && d.food, d && d.tags.food.join("; "), d && d.tags.helpers.join("; "), d && d.tags.other.join("; "), db.meds.filter(m => medActiveOn(m, D)).map(m => m.name).join("; "), d && d.water, d && d.stress,
         ...SYMPTOMS.map(([k]) => d ? LEVEL_WORD[d.sym[k]] : ""), d && d.notes,
         m ? M : "", m && m.status, m && m.sleepH, m && m.sleepQ, m && m.tags.morning.join("; "), m && m.stressM, m && m.attemptAt, m && m.bm, m && m.bristol,
         m && (EMPTIED[m.emptied] || ""), m && (m.urgency ? "yes" : ""), m && m.overall, m && m.notes].map(q).join(",");

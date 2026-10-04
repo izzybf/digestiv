@@ -1002,18 +1002,35 @@ nav.tabs { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bott
     try { if ("setAppBadge" in navigator) (db.mornings[today()] && db.mornings[today()].status === "submitted") ? navigator.clearAppBadge() : navigator.setAppBadge(1); } catch {}
   }
   const defaultPart = () => (new Date().getHours() < 12 && !(db.mornings[today()] && db.mornings[today()].status === "submitted")) ? "morning" : "day";
+  // Drafts from earlier days submit themselves once the day is over. A morning needs its gut score first.
+  function autoSubmit() {
+    flush();
+    const t = today(), now = new Date().toISOString();
+    let changed = false;
+    [["day", db.days], ["morning", db.mornings]].forEach(([p, recs]) => Object.values(recs).forEach(r => {
+      if (r.status !== "draft" || r.date >= t || (p === "morning" && !r.overall)) return;
+      r.status = "submitted"; r.submittedAt = now; r.autoSubmitted = true; changed = true;
+      if (S[p] && S[p].date === r.date) Object.assign(S[p], { status: r.status, submittedAt: now, autoSubmitted: true });
+    }));
+    if (changed) { persist(); if (S.day) renderStatus("day"); if (S.morning) renderStatus("morning"); }
+  }
   let openedOn = today();
+  function rollover() {
+    if (today() === openedOn) return;
+    openedOn = today(); autoSubmit(); openDay(today()); openMorning(today()); showPart(defaultPart());
+  }
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) return flush();
-    updateBadge();
-    if (today() !== openedOn) { openedOn = today(); openDay(today()); openMorning(today()); showPart(defaultPart()); }
+    autoSubmit(); updateBadge(); rollover();
   });
+  setInterval(() => { if (!document.hidden) rollover(); }, 60000);
   window.addEventListener("pagehide", flush);
   if ("serviceWorker" in navigator && !inFrame && /^https:|^http:\/\/localhost/.test(location.href)) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
 
   $("#d-date").max = $("#m-date").max = today();
+  autoSubmit();
   openDay(today()); openMorning(today());
   updateBadge();
   const start = location.hash.replace("#", "");
